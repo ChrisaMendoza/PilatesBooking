@@ -1,0 +1,32 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "pilatesBooking",
+    "buildTool": "maven",
+    "cacheProvider": null,
+    "clientFramework": "angular",
+    "clientTestFrameworks": [],
+    "clientTheme": "none",
+    "creationTimestamp": 1768312897104,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "enableHibernateCache": null,
+    "enableTranslation": false,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "8.11.0",
+    "jwtSecretKey": "ZGY0ZWI4MmU5OTFmNzM4NzE1N2NhMDk0YzJlNzEyYzQ1NmJkZDFlNDc1NDBiZTk2NzRlNzJmNGFlOTRlNGUzNDE1ZmJiOThlYTVjYjdiOGU3NTE3ODk1YmNlMzcwYTE0NmUxYWExZTFhYzJmNTQ0MGMwMGQyY2M4ZjZlNTk1MTQ=",
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "fr",
+    "packageName": "com.pilates.booking",
+    "prodDatabaseType": "postgresql",
+    "reactive": true,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": true
+  }
+}
