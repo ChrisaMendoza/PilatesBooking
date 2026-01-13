@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (periodSubscription(); as periodSubscriptionRef) {
+      <div>
+        <h2 data-cy="periodSubscriptionDetailsHeading"><span>Period Subscription</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.id }}</span>
+          </dd>
+          <dt><span>Subscription Name</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.subscriptionName }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.description }}</span>
+          </dd>
+          <dt><span>Price</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.price }}</span>
+          </dd>
+          <dt><span>Billing Period</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.billingPeriod }}</span>
+          </dd>
+          <dt><span>Credits Per Period</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.creditsPerPeriod }}</span>
+          </dd>
+          <dt><span>Start Date</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.startDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span>End Date</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.endDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span>User</span></dt>
+          <dd>
+            <span>{{ periodSubscriptionRef.user?.id }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/period-subscription', periodSubscriptionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

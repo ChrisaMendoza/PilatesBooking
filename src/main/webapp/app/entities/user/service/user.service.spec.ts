@@ -5,9 +5,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { IUser } from '../user.model';
 import { sampleWithFullData, sampleWithPartialData, sampleWithRequiredData } from '../user.test-samples';
 
-import { UserService } from './user.service';
+import { RestUser, UserService } from './user.service';
 
-const requireRestSample: IUser = {
+const requireRestSample: RestUser = {
   ...sampleWithRequiredData,
 };
 

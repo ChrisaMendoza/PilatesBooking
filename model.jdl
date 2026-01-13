@@ -1,0 +1,69 @@
+entity User {
+  nom String
+  prenom String
+  dateDeNaissance LocalDate
+  email String required unique
+  phone String
+  address String
+}
+
+entity Studio {
+  name String required
+  address String
+  category String
+}
+
+entity ClassType {
+  name String required
+  description String
+  duration Integer required
+  capacity Integer
+}
+
+entity ClassSession {
+  coachName String
+  startAt ZonedDateTime required
+  endAt ZonedDateTime required
+  capacity Integer required
+  status String
+}
+
+entity Booking {
+  status String
+  createdAt ZonedDateTime
+  cancelledAt ZonedDateTime
+}
+
+entity PeriodSubscription {
+  subscriptionName String required
+  description String
+  price Integer required
+  billingPeriod String
+  creditsPerPeriod Integer required
+  startDate LocalDate
+  endDate LocalDate
+}
+
+entity Pack {
+  packName String required
+  description String
+  price Integer required
+  billingPeriod String
+  credits Integer required
+  validityDays Integer
+}
+
+relationship ManyToOne {
+  ClassSession to Studio
+  ClassSession to ClassType
+  PeriodSubscription{user} to User
+}
+
+relationship ManyToOne {
+  Booking{user} to User
+  Booking{classSession} to ClassSession
+  Pack{user} to User
+}
+
+
+service all with serviceImpl

@@ -1,0 +1,146 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-class-session-heading" data-cy="ClassSessionCreateUpdateHeading">Créer ou éditer un Class Session</h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_coachName">Coach Name</label>
+          <input type="text" class="form-control" name="coachName" id="field_coachName" data-cy="coachName" formControlName="coachName" />
+        </div>
+
+        @let startAtRef = editForm.get('startAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_startAt">Start At</label>
+          <div class="d-flex">
+            <input
+              id="field_startAt"
+              data-cy="startAt"
+              type="datetime-local"
+              class="form-control"
+              name="startAt"
+              formControlName="startAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (startAtRef.invalid && (startAtRef.dirty || startAtRef.touched)) {
+            <div>
+              @if (editForm.get('startAt')?.errors?.required) {
+                <small class="form-text text-danger">Ce champ est obligatoire.</small>
+              }
+              <small class="form-text text-danger" [hidden]="!editForm.get('startAt')?.errors?.datetimelocal"
+                >Ce champ doit être une date et une heure.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let endAtRef = editForm.get('endAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_endAt">End At</label>
+          <div class="d-flex">
+            <input
+              id="field_endAt"
+              data-cy="endAt"
+              type="datetime-local"
+              class="form-control"
+              name="endAt"
+              formControlName="endAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (endAtRef.invalid && (endAtRef.dirty || endAtRef.touched)) {
+            <div>
+              @if (editForm.get('endAt')?.errors?.required) {
+                <small class="form-text text-danger">Ce champ est obligatoire.</small>
+              }
+              <small class="form-text text-danger" [hidden]="!editForm.get('endAt')?.errors?.datetimelocal"
+                >Ce champ doit être une date et une heure.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let capacityRef = editForm.get('capacity')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_capacity">Capacity</label>
+          <input type="number" class="form-control" name="capacity" id="field_capacity" data-cy="capacity" formControlName="capacity" />
+          @if (capacityRef.invalid && (capacityRef.dirty || capacityRef.touched)) {
+            <div>
+              @if (editForm.get('capacity')?.errors?.required) {
+                <small class="form-text text-danger">Ce champ est obligatoire.</small>
+              }
+              <small class="form-text text-danger" [hidden]="!editForm.get('capacity')?.errors?.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_status">Status</label>
+          <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_studio">Studio</label>
+          <select
+            class="form-control"
+            id="field_studio"
+            data-cy="studio"
+            name="studio"
+            formControlName="studio"
+            [compareWith]="compareStudio"
+          >
+            <option [ngValue]="null"></option>
+            @for (studioOption of studiosSharedCollection; track $index) {
+              <option [ngValue]="studioOption">{{ studioOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_classType">Class Type</label>
+          <select
+            class="form-control"
+            id="field_classType"
+            data-cy="classType"
+            name="classType"
+            formControlName="classType"
+            [compareWith]="compareClassType"
+          >
+            <option [ngValue]="null"></option>
+            @for (classTypeOption of classTypesSharedCollection; track $index) {
+              <option [ngValue]="classTypeOption">{{ classTypeOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

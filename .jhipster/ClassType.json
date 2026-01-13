@@ -1,0 +1,38 @@
+{
+  "annotations": {
+    "changelogDate": "20260113160016"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "duration",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "capacity",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "ClassType",
+  "relationships": [
+    {
+      "otherEntityName": "classSession",
+      "otherEntityRelationshipName": "classType",
+      "relationshipName": "classSession",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

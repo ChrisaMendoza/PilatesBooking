@@ -1,0 +1,33 @@
+{
+  "annotations": {
+    "changelogDate": "20260113160015"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "category",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Studio",
+  "relationships": [
+    {
+      "otherEntityName": "classSession",
+      "otherEntityRelationshipName": "studio",
+      "relationshipName": "classSession",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

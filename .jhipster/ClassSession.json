@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20260113160017"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "coachName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startAt",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "endAt",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "capacity",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    }
+  ],
+  "name": "ClassSession",
+  "relationships": [
+    {
+      "otherEntityName": "studio",
+      "otherEntityRelationshipName": "classSession",
+      "relationshipName": "studio",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "classType",
+      "otherEntityRelationshipName": "classSession",
+      "relationshipName": "classType",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

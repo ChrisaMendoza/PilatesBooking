@@ -12,7 +12,18 @@
     <property name="timeType" value="time(6)" dbms="postgresql"/>
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160014_added_entity_User.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160015_added_entity_Studio.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160016_added_entity_ClassType.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160017_added_entity_ClassSession.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160018_added_entity_Booking.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160019_added_entity_PeriodSubscription.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160020_added_entity_Pack.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20260113160017_added_entity_constraints_ClassSession.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160018_added_entity_constraints_Booking.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160019_added_entity_constraints_PeriodSubscription.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260113160020_added_entity_constraints_Pack.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

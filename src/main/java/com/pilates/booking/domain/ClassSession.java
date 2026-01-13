@@ -1,0 +1,211 @@
+package com.pilates.booking.domain;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.*;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+/**
+ * A ClassSession.
+ */
+@Table("class_session")
+@SuppressWarnings("common-java:DuplicatedBlocks")
+public class ClassSession implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @Column("id")
+    private Long id;
+
+    @Column("coach_name")
+    private String coachName;
+
+    @NotNull(message = "must not be null")
+    @Column("start_at")
+    private ZonedDateTime startAt;
+
+    @NotNull(message = "must not be null")
+    @Column("end_at")
+    private ZonedDateTime endAt;
+
+    @NotNull(message = "must not be null")
+    @Column("capacity")
+    private Integer capacity;
+
+    @Column("status")
+    private String status;
+
+    @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "classSessions" }, allowSetters = true)
+    private Studio studio;
+
+    @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "classSessions" }, allowSetters = true)
+    private ClassType classType;
+
+    @Column("studio_id")
+    private Long studioId;
+
+    @Column("class_type_id")
+    private Long classTypeId;
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public ClassSession id(Long id) {
+        this.setId(id);
+        return this;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCoachName() {
+        return this.coachName;
+    }
+
+    public ClassSession coachName(String coachName) {
+        this.setCoachName(coachName);
+        return this;
+    }
+
+    public void setCoachName(String coachName) {
+        this.coachName = coachName;
+    }
+
+    public ZonedDateTime getStartAt() {
+        return this.startAt;
+    }
+
+    public ClassSession startAt(ZonedDateTime startAt) {
+        this.setStartAt(startAt);
+        return this;
+    }
+
+    public void setStartAt(ZonedDateTime startAt) {
+        this.startAt = startAt;
+    }
+
+    public ZonedDateTime getEndAt() {
+        return this.endAt;
+    }
+
+    public ClassSession endAt(ZonedDateTime endAt) {
+        this.setEndAt(endAt);
+        return this;
+    }
+
+    public void setEndAt(ZonedDateTime endAt) {
+        this.endAt = endAt;
+    }
+
+    public Integer getCapacity() {
+        return this.capacity;
+    }
+
+    public ClassSession capacity(Integer capacity) {
+        this.setCapacity(capacity);
+        return this;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public ClassSession status(String status) {
+        this.setStatus(status);
+        return this;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Studio getStudio() {
+        return this.studio;
+    }
+
+    public void setStudio(Studio studio) {
+        this.studio = studio;
+        this.studioId = studio != null ? studio.getId() : null;
+    }
+
+    public ClassSession studio(Studio studio) {
+        this.setStudio(studio);
+        return this;
+    }
+
+    public ClassType getClassType() {
+        return this.classType;
+    }
+
+    public void setClassType(ClassType classType) {
+        this.classType = classType;
+        this.classTypeId = classType != null ? classType.getId() : null;
+    }
+
+    public ClassSession classType(ClassType classType) {
+        this.setClassType(classType);
+        return this;
+    }
+
+    public Long getStudioId() {
+        return this.studioId;
+    }
+
+    public void setStudioId(Long studio) {
+        this.studioId = studio;
+    }
+
+    public Long getClassTypeId() {
+        return this.classTypeId;
+    }
+
+    public void setClassTypeId(Long classType) {
+        this.classTypeId = classType;
+    }
+
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ClassSession)) {
+            return false;
+        }
+        return getId() != null && getId().equals(((ClassSession) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        return getClass().hashCode();
+    }
+
+    // prettier-ignore
+    @Override
+    public String toString() {
+        return "ClassSession{" +
+            "id=" + getId() +
+            ", coachName='" + getCoachName() + "'" +
+            ", startAt='" + getStartAt() + "'" +
+            ", endAt='" + getEndAt() + "'" +
+            ", capacity=" + getCapacity() +
+            ", status='" + getStatus() + "'" +
+            "}";
+    }
+}

@@ -1,0 +1,142 @@
+<div>
+  <h2 id="page-heading" data-cy="ClassSessionHeading">
+    <span>ClassSessions</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-class-session"
+        [routerLink]="['/class-session/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Créer un nouveau Class Session</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (classSessions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>Aucun Class Session trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="coachName">
+              <div class="d-flex">
+                <span>Coach Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="startAt">
+              <div class="d-flex">
+                <span>Start At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="endAt">
+              <div class="d-flex">
+                <span>End At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="capacity">
+              <div class="d-flex">
+                <span>Capacity</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span>Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="studio.id">
+              <div class="d-flex">
+                <span>Studio</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="classType.id">
+              <div class="d-flex">
+                <span>Class Type</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (classSession of classSessions(); track trackId(classSession)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/class-session', classSession.id, 'view']">{{ classSession.id }}</a>
+              </td>
+              <td>{{ classSession.coachName }}</td>
+              <td>{{ classSession.startAt | formatMediumDatetime }}</td>
+              <td>{{ classSession.endAt | formatMediumDatetime }}</td>
+              <td>{{ classSession.capacity }}</td>
+              <td>{{ classSession.status }}</td>
+              <td>
+                @if (classSession.studio) {
+                  <div>
+                    <a [routerLink]="['/studio', classSession.studio.id, 'view']">{{ classSession.studio.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (classSession.classType) {
+                  <div>
+                    <a [routerLink]="['/class-type', classSession.classType.id, 'view']">{{ classSession.classType.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/class-session', classSession.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/class-session', classSession.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(classSession)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

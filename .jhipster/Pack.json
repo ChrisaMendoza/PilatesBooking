@@ -1,0 +1,46 @@
+{
+  "annotations": {
+    "changelogDate": "20260113160020"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "packName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "billingPeriod",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "credits",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "validityDays",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "Pack",
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "relationshipName": "user",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

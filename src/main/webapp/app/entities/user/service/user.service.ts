@@ -1,11 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { IUser } from '../user.model';
+
+type RestOf<T extends IUser> = Omit<T, ''> & {};
+
+export type RestUser = RestOf<IUser>;
 
 export type EntityResponseType = HttpResponse<IUser>;
 export type EntityArrayResponseType = HttpResponse<IUser[]>;
@@ -18,12 +22,16 @@ export class UserService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/users');
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IUser>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get<RestUser>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map(res => this.convertResponseFromServer(res)));
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
+    return this.http
+      .get<RestUser[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
   getUserIdentifier(user: Pick<IUser, 'id'>): number {
@@ -52,5 +60,29 @@ export class UserService {
       return [...usersToAdd, ...userCollection];
     }
     return userCollection;
+  }
+
+  protected convertDateFromClient<T extends IUser>(user: T): RestOf<T> {
+    return {
+      ...user,
+    };
+  }
+
+  protected convertDateFromServer(restUser: RestUser): IUser {
+    return {
+      ...restUser,
+    };
+  }
+
+  protected convertResponseFromServer(res: HttpResponse<RestUser>): HttpResponse<IUser> {
+    return res.clone({
+      body: res.body ? this.convertDateFromServer(res.body) : null,
+    });
+  }
+
+  protected convertResponseArrayFromServer(res: HttpResponse<RestUser[]>): HttpResponse<IUser[]> {
+    return res.clone({
+      body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
+    });
   }
 }
