@@ -38,9 +38,6 @@ class ClassTypeResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_DURATION = 1;
-    private static final Integer UPDATED_DURATION = 2;
-
     private static final Integer DEFAULT_CAPACITY = 1;
     private static final Integer UPDATED_CAPACITY = 2;
 
@@ -73,7 +70,7 @@ class ClassTypeResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ClassType createEntity() {
-        return new ClassType().name(DEFAULT_NAME).description(DEFAULT_DESCRIPTION).duration(DEFAULT_DURATION).capacity(DEFAULT_CAPACITY);
+        return new ClassType().name(DEFAULT_NAME).description(DEFAULT_DESCRIPTION).capacity(DEFAULT_CAPACITY);
     }
 
     /**
@@ -83,7 +80,7 @@ class ClassTypeResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ClassType createUpdatedEntity() {
-        return new ClassType().name(UPDATED_NAME).description(UPDATED_DESCRIPTION).duration(UPDATED_DURATION).capacity(UPDATED_CAPACITY);
+        return new ClassType().name(UPDATED_NAME).description(UPDATED_DESCRIPTION).capacity(UPDATED_CAPACITY);
     }
 
     public static void deleteEntities(EntityManager em) {
@@ -173,26 +170,6 @@ class ClassTypeResourceIT {
     }
 
     @Test
-    void checkDurationIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        classType.setDuration(null);
-
-        // Create the ClassType, which fails.
-
-        webTestClient
-            .post()
-            .uri(ENTITY_API_URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(om.writeValueAsBytes(classType))
-            .exchange()
-            .expectStatus()
-            .isBadRequest();
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
     void getAllClassTypesAsStream() {
         // Initialize the database
         classTypeRepository.save(classType).block();
@@ -243,8 +220,6 @@ class ClassTypeResourceIT {
             .value(hasItem(DEFAULT_NAME))
             .jsonPath("$.[*].description")
             .value(hasItem(DEFAULT_DESCRIPTION))
-            .jsonPath("$.[*].duration")
-            .value(hasItem(DEFAULT_DURATION))
             .jsonPath("$.[*].capacity")
             .value(hasItem(DEFAULT_CAPACITY));
     }
@@ -271,8 +246,6 @@ class ClassTypeResourceIT {
             .value(is(DEFAULT_NAME))
             .jsonPath("$.description")
             .value(is(DEFAULT_DESCRIPTION))
-            .jsonPath("$.duration")
-            .value(is(DEFAULT_DURATION))
             .jsonPath("$.capacity")
             .value(is(DEFAULT_CAPACITY));
     }
@@ -298,7 +271,7 @@ class ClassTypeResourceIT {
 
         // Update the classType
         ClassType updatedClassType = classTypeRepository.findById(classType.getId()).block();
-        updatedClassType.name(UPDATED_NAME).description(UPDATED_DESCRIPTION).duration(UPDATED_DURATION).capacity(UPDATED_CAPACITY);
+        updatedClassType.name(UPDATED_NAME).description(UPDATED_DESCRIPTION).capacity(UPDATED_CAPACITY);
 
         webTestClient
             .put()
@@ -382,7 +355,7 @@ class ClassTypeResourceIT {
         ClassType partialUpdatedClassType = new ClassType();
         partialUpdatedClassType.setId(classType.getId());
 
-        partialUpdatedClassType.name(UPDATED_NAME).description(UPDATED_DESCRIPTION);
+        partialUpdatedClassType.name(UPDATED_NAME).description(UPDATED_DESCRIPTION).capacity(UPDATED_CAPACITY);
 
         webTestClient
             .patch()
@@ -413,7 +386,7 @@ class ClassTypeResourceIT {
         ClassType partialUpdatedClassType = new ClassType();
         partialUpdatedClassType.setId(classType.getId());
 
-        partialUpdatedClassType.name(UPDATED_NAME).description(UPDATED_DESCRIPTION).duration(UPDATED_DURATION).capacity(UPDATED_CAPACITY);
+        partialUpdatedClassType.name(UPDATED_NAME).description(UPDATED_DESCRIPTION).capacity(UPDATED_CAPACITY);
 
         webTestClient
             .patch()

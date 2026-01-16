@@ -1,6 +1,7 @@
 package com.pilates.booking.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -10,8 +11,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * A ClassType.
+ * Class type entity (duration removed)
  */
+@Schema(description = "Class type entity (duration removed)")
 @Table("class_type")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ClassType implements Serializable {
@@ -29,12 +31,12 @@ public class ClassType implements Serializable {
     @Column("description")
     private String description;
 
-    @NotNull(message = "must not be null")
-    @Column("duration")
-    private Integer duration;
-
     @Column("capacity")
     private Integer capacity;
+
+    @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "studio", "classType" }, allowSetters = true)
+    private Set<Event> events = new HashSet<>();
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "studio", "classType" }, allowSetters = true)
@@ -81,19 +83,6 @@ public class ClassType implements Serializable {
         this.description = description;
     }
 
-    public Integer getDuration() {
-        return this.duration;
-    }
-
-    public ClassType duration(Integer duration) {
-        this.setDuration(duration);
-        return this;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
     public Integer getCapacity() {
         return this.capacity;
     }
@@ -105,6 +94,37 @@ public class ClassType implements Serializable {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public Set<Event> getEvents() {
+        return this.events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        if (this.events != null) {
+            this.events.forEach(i -> i.setClassType(null));
+        }
+        if (events != null) {
+            events.forEach(i -> i.setClassType(this));
+        }
+        this.events = events;
+    }
+
+    public ClassType events(Set<Event> events) {
+        this.setEvents(events);
+        return this;
+    }
+
+    public ClassType addEvent(Event event) {
+        this.events.add(event);
+        event.setClassType(this);
+        return this;
+    }
+
+    public ClassType removeEvent(Event event) {
+        this.events.remove(event);
+        event.setClassType(null);
+        return this;
     }
 
     public Set<ClassSession> getClassSessions() {
@@ -164,7 +184,6 @@ public class ClassType implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", duration=" + getDuration() +
             ", capacity=" + getCapacity() +
             "}";
     }

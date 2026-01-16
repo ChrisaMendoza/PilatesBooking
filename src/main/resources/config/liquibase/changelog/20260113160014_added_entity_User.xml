@@ -10,7 +10,7 @@
         Added the entity User.
     -->
     <changeSet id="20260113160014-1" author="jhipster">
-        <createTable tableName="jhi_user">
+        <createTable tableName="jhi_user" remarks="User entity with profile information">
             <column name="id" type="bigint" autoIncrement="true" startWith="1500">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

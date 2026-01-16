@@ -355,8 +355,6 @@ class StudioResourceIT {
         Studio partialUpdatedStudio = new Studio();
         partialUpdatedStudio.setId(studio.getId());
 
-        partialUpdatedStudio.name(UPDATED_NAME).category(UPDATED_CATEGORY);
-
         webTestClient
             .patch()
             .uri(ENTITY_API_URL_ID, partialUpdatedStudio.getId())

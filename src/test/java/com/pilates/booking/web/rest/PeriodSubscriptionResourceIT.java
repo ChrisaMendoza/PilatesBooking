@@ -457,8 +457,9 @@ class PeriodSubscriptionResourceIT {
 
         partialUpdatedPeriodSubscription
             .subscriptionName(UPDATED_SUBSCRIPTION_NAME)
-            .creditsPerPeriod(UPDATED_CREDITS_PER_PERIOD)
-            .endDate(UPDATED_END_DATE);
+            .description(UPDATED_DESCRIPTION)
+            .price(UPDATED_PRICE)
+            .creditsPerPeriod(UPDATED_CREDITS_PER_PERIOD);
 
         webTestClient
             .patch()

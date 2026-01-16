@@ -10,7 +10,7 @@
         Added the entity Pack.
     -->
     <changeSet id="20260113160020-1" author="jhipster">
-        <createTable tableName="pack">
+        <createTable tableName="pack" remarks="Pack entity">
             <column name="id" type="bigint" autoIncrement="true" startWith="1500">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

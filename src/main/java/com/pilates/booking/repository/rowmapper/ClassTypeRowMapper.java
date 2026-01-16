@@ -27,7 +27,6 @@ public class ClassTypeRowMapper implements BiFunction<Row, String, ClassType> {
         entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
         entity.setName(converter.fromRow(row, prefix + "_name", String.class));
         entity.setDescription(converter.fromRow(row, prefix + "_description", String.class));
-        entity.setDuration(converter.fromRow(row, prefix + "_duration", Integer.class));
         entity.setCapacity(converter.fromRow(row, prefix + "_capacity", Integer.class));
         return entity;
     }

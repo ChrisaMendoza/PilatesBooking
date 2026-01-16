@@ -6,8 +6,8 @@ import { Subject, from, of } from 'rxjs';
 
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/service/user.service';
-import { IClassSession } from 'app/entities/class-session/class-session.model';
-import { ClassSessionService } from 'app/entities/class-session/service/class-session.service';
+import { IEvent } from 'app/entities/event/event.model';
+import { EventService } from 'app/entities/event/service/event.service';
 import { IBooking } from '../booking.model';
 import { BookingService } from '../service/booking.service';
 import { BookingFormService } from './booking-form.service';
@@ -21,7 +21,7 @@ describe('Booking Management Update Component', () => {
   let bookingFormService: BookingFormService;
   let bookingService: BookingService;
   let userService: UserService;
-  let classSessionService: ClassSessionService;
+  let eventService: EventService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -45,7 +45,7 @@ describe('Booking Management Update Component', () => {
     bookingFormService = TestBed.inject(BookingFormService);
     bookingService = TestBed.inject(BookingService);
     userService = TestBed.inject(UserService);
-    classSessionService = TestBed.inject(ClassSessionService);
+    eventService = TestBed.inject(EventService);
 
     comp = fixture.componentInstance;
   });
@@ -73,40 +73,40 @@ describe('Booking Management Update Component', () => {
       expect(comp.usersSharedCollection).toEqual(expectedCollection);
     });
 
-    it('should call ClassSession query and add missing value', () => {
+    it('should call Event query and add missing value', () => {
       const booking: IBooking = { id: 4697 };
-      const classSession: IClassSession = { id: 18095 };
-      booking.classSession = classSession;
+      const event: IEvent = { id: 22576 };
+      booking.event = event;
 
-      const classSessionCollection: IClassSession[] = [{ id: 18095 }];
-      jest.spyOn(classSessionService, 'query').mockReturnValue(of(new HttpResponse({ body: classSessionCollection })));
-      const additionalClassSessions = [classSession];
-      const expectedCollection: IClassSession[] = [...additionalClassSessions, ...classSessionCollection];
-      jest.spyOn(classSessionService, 'addClassSessionToCollectionIfMissing').mockReturnValue(expectedCollection);
+      const eventCollection: IEvent[] = [{ id: 22576 }];
+      jest.spyOn(eventService, 'query').mockReturnValue(of(new HttpResponse({ body: eventCollection })));
+      const additionalEvents = [event];
+      const expectedCollection: IEvent[] = [...additionalEvents, ...eventCollection];
+      jest.spyOn(eventService, 'addEventToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ booking });
       comp.ngOnInit();
 
-      expect(classSessionService.query).toHaveBeenCalled();
-      expect(classSessionService.addClassSessionToCollectionIfMissing).toHaveBeenCalledWith(
-        classSessionCollection,
-        ...additionalClassSessions.map(expect.objectContaining),
+      expect(eventService.query).toHaveBeenCalled();
+      expect(eventService.addEventToCollectionIfMissing).toHaveBeenCalledWith(
+        eventCollection,
+        ...additionalEvents.map(expect.objectContaining),
       );
-      expect(comp.classSessionsSharedCollection).toEqual(expectedCollection);
+      expect(comp.eventsSharedCollection).toEqual(expectedCollection);
     });
 
     it('should update editForm', () => {
       const booking: IBooking = { id: 4697 };
       const user: IUser = { id: 3944 };
       booking.user = user;
-      const classSession: IClassSession = { id: 18095 };
-      booking.classSession = classSession;
+      const event: IEvent = { id: 22576 };
+      booking.event = event;
 
       activatedRoute.data = of({ booking });
       comp.ngOnInit();
 
       expect(comp.usersSharedCollection).toContainEqual(user);
-      expect(comp.classSessionsSharedCollection).toContainEqual(classSession);
+      expect(comp.eventsSharedCollection).toContainEqual(event);
       expect(comp.booking).toEqual(booking);
     });
   });
@@ -190,13 +190,13 @@ describe('Booking Management Update Component', () => {
       });
     });
 
-    describe('compareClassSession', () => {
-      it('should forward to classSessionService', () => {
-        const entity = { id: 18095 };
-        const entity2 = { id: 8832 };
-        jest.spyOn(classSessionService, 'compareClassSession');
-        comp.compareClassSession(entity, entity2);
-        expect(classSessionService.compareClassSession).toHaveBeenCalledWith(entity, entity2);
+    describe('compareEvent', () => {
+      it('should forward to eventService', () => {
+        const entity = { id: 22576 };
+        const entity2 = { id: 3268 };
+        jest.spyOn(eventService, 'compareEvent');
+        comp.compareEvent(entity, entity2);
+        expect(eventService.compareEvent).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

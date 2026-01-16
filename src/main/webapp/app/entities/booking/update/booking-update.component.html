@@ -59,18 +59,11 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="field_classSession">Class Session</label>
-          <select
-            class="form-control"
-            id="field_classSession"
-            data-cy="classSession"
-            name="classSession"
-            formControlName="classSession"
-            [compareWith]="compareClassSession"
-          >
+          <label class="form-label" for="field_event">Event</label>
+          <select class="form-control" id="field_event" data-cy="event" name="event" formControlName="event" [compareWith]="compareEvent">
             <option [ngValue]="null"></option>
-            @for (classSessionOption of classSessionsSharedCollection; track $index) {
-              <option [ngValue]="classSessionOption">{{ classSessionOption.id }}</option>
+            @for (eventOption of eventsSharedCollection; track $index) {
+              <option [ngValue]="eventOption">{{ eventOption.id }}</option>
             }
           </select>
         </div>

@@ -16,7 +16,7 @@ public class BookingSqlHelper {
         columns.add(Column.aliased("cancelled_at", table, columnPrefix + "_cancelled_at"));
 
         columns.add(Column.aliased("user_id", table, columnPrefix + "_user_id"));
-        columns.add(Column.aliased("class_session_id", table, columnPrefix + "_class_session_id"));
+        columns.add(Column.aliased("event_id", table, columnPrefix + "_event_id"));
         return columns;
     }
 }

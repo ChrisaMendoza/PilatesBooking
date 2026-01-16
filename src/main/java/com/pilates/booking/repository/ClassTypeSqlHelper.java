@@ -13,7 +13,6 @@ public class ClassTypeSqlHelper {
         columns.add(Column.aliased("id", table, columnPrefix + "_id"));
         columns.add(Column.aliased("name", table, columnPrefix + "_name"));
         columns.add(Column.aliased("description", table, columnPrefix + "_description"));
-        columns.add(Column.aliased("duration", table, columnPrefix + "_duration"));
         columns.add(Column.aliased("capacity", table, columnPrefix + "_capacity"));
 
         return columns;

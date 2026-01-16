@@ -67,9 +67,9 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="classSession.id">
+            <th scope="col" jhiSortBy="event.id">
               <div class="d-flex">
-                <span>Class Session</span>
+                <span>Event</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -89,9 +89,9 @@
                 {{ booking.user?.id }}
               </td>
               <td>
-                @if (booking.classSession) {
+                @if (booking.event) {
                   <div>
-                    <a [routerLink]="['/class-session', booking.classSession.id, 'view']">{{ booking.classSession.id }}</a>
+                    <a [routerLink]="['/event', booking.event.id, 'view']">{{ booking.event.id }}</a>
                   </div>
                 }
               </td>

@@ -3,6 +3,7 @@
     "changelogDate": "20260113160015"
   },
   "applications": "*",
+  "documentation": "Studio entity",
   "fields": [
     {
       "fieldName": "name",
@@ -21,9 +22,9 @@
   "name": "Studio",
   "relationships": [
     {
-      "otherEntityName": "classSession",
+      "otherEntityName": "event",
       "otherEntityRelationshipName": "studio",
-      "relationshipName": "classSession",
+      "relationshipName": "event",
       "relationshipSide": "right",
       "relationshipType": "one-to-many"
     }

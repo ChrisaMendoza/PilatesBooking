@@ -24,7 +24,7 @@ describe('Booking Form Service', () => {
             createdAt: expect.any(Object),
             cancelledAt: expect.any(Object),
             user: expect.any(Object),
-            classSession: expect.any(Object),
+            event: expect.any(Object),
           }),
         );
       });
@@ -39,7 +39,7 @@ describe('Booking Form Service', () => {
             createdAt: expect.any(Object),
             cancelledAt: expect.any(Object),
             user: expect.any(Object),
-            classSession: expect.any(Object),
+            event: expect.any(Object),
           }),
         );
       });

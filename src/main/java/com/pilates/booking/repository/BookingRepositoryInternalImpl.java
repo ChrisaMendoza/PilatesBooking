@@ -2,7 +2,7 @@ package com.pilates.booking.repository;
 
 import com.pilates.booking.domain.Booking;
 import com.pilates.booking.repository.rowmapper.BookingRowMapper;
-import com.pilates.booking.repository.rowmapper.ClassSessionRowMapper;
+import com.pilates.booking.repository.rowmapper.EventRowMapper;
 import com.pilates.booking.repository.rowmapper.UserRowMapper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
@@ -37,18 +37,18 @@ class BookingRepositoryInternalImpl extends SimpleR2dbcRepository<Booking, Long>
     private final EntityManager entityManager;
 
     private final UserRowMapper userMapper;
-    private final ClassSessionRowMapper classsessionMapper;
+    private final EventRowMapper eventMapper;
     private final BookingRowMapper bookingMapper;
 
     private static final Table entityTable = Table.aliased("booking", EntityManager.ENTITY_ALIAS);
     private static final Table userTable = Table.aliased("jhi_user", "e_user");
-    private static final Table classSessionTable = Table.aliased("class_session", "classSession");
+    private static final Table eventTable = Table.aliased("event", "event");
 
     public BookingRepositoryInternalImpl(
         R2dbcEntityTemplate template,
         EntityManager entityManager,
         UserRowMapper userMapper,
-        ClassSessionRowMapper classsessionMapper,
+        EventRowMapper eventMapper,
         BookingRowMapper bookingMapper,
         R2dbcEntityOperations entityOperations,
         R2dbcConverter converter
@@ -62,7 +62,7 @@ class BookingRepositoryInternalImpl extends SimpleR2dbcRepository<Booking, Long>
         this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
         this.userMapper = userMapper;
-        this.classsessionMapper = classsessionMapper;
+        this.eventMapper = eventMapper;
         this.bookingMapper = bookingMapper;
     }
 
@@ -74,16 +74,16 @@ class BookingRepositoryInternalImpl extends SimpleR2dbcRepository<Booking, Long>
     RowsFetchSpec<Booking> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = BookingSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(UserSqlHelper.getColumns(userTable, "user"));
-        columns.addAll(ClassSessionSqlHelper.getColumns(classSessionTable, "classSession"));
+        columns.addAll(EventSqlHelper.getColumns(eventTable, "event"));
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(userTable)
             .on(Column.create("user_id", entityTable))
             .equals(Column.create("id", userTable))
-            .leftOuterJoin(classSessionTable)
-            .on(Column.create("class_session_id", entityTable))
-            .equals(Column.create("id", classSessionTable));
+            .leftOuterJoin(eventTable)
+            .on(Column.create("event_id", entityTable))
+            .equals(Column.create("id", eventTable));
         // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Booking.class, pageable, whereClause);
         return db.sql(select).map(this::process);
@@ -103,7 +103,7 @@ class BookingRepositoryInternalImpl extends SimpleR2dbcRepository<Booking, Long>
     private Booking process(Row row, RowMetadata metadata) {
         Booking entity = bookingMapper.apply(row, "e");
         entity.setUser(userMapper.apply(row, "user"));
-        entity.setClassSession(classsessionMapper.apply(row, "classSession"));
+        entity.setEvent(eventMapper.apply(row, "event"));
         return entity;
     }
 

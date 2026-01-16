@@ -49,7 +49,6 @@ public class ClassTypeAsserts {
             .as("Verify ClassType relevant properties")
             .satisfies(a -> assertThat(a.getName()).as("check name").isEqualTo(expected.getName()))
             .satisfies(a -> assertThat(a.getDescription()).as("check description").isEqualTo(expected.getDescription()))
-            .satisfies(a -> assertThat(a.getDuration()).as("check duration").isEqualTo(expected.getDuration()))
             .satisfies(a -> assertThat(a.getCapacity()).as("check capacity").isEqualTo(expected.getCapacity()));
     }
 

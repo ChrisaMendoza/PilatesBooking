@@ -3,6 +3,7 @@
     "changelogDate": "20260113160016"
   },
   "applications": "*",
+  "documentation": "Class type entity (duration removed)",
   "fields": [
     {
       "fieldName": "name",
@@ -14,11 +15,6 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "duration",
-      "fieldType": "Integer",
-      "fieldValidateRules": ["required"]
-    },
-    {
       "fieldName": "capacity",
       "fieldType": "Integer"
     }
@@ -26,9 +22,9 @@
   "name": "ClassType",
   "relationships": [
     {
-      "otherEntityName": "classSession",
+      "otherEntityName": "event",
       "otherEntityRelationshipName": "classType",
-      "relationshipName": "classSession",
+      "relationshipName": "event",
       "relationshipSide": "right",
       "relationshipType": "one-to-many"
     }

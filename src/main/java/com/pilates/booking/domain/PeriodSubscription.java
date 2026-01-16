@@ -1,5 +1,6 @@
 package com.pilates.booking.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -8,8 +9,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * A PeriodSubscription.
+ * Period subscription entity (modified by professor)
  */
+@Schema(description = "Period subscription entity (modified by professor)")
 @Table("period_subscription")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class PeriodSubscription implements Serializable {

@@ -9,8 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/service/user.service';
-import { IClassSession } from 'app/entities/class-session/class-session.model';
-import { ClassSessionService } from 'app/entities/class-session/service/class-session.service';
+import { IEvent } from 'app/entities/event/event.model';
+import { EventService } from 'app/entities/event/service/event.service';
 import { BookingService } from '../service/booking.service';
 import { IBooking } from '../booking.model';
 import { BookingFormGroup, BookingFormService } from './booking-form.service';
@@ -25,12 +25,12 @@ export class BookingUpdateComponent implements OnInit {
   booking: IBooking | null = null;
 
   usersSharedCollection: IUser[] = [];
-  classSessionsSharedCollection: IClassSession[] = [];
+  eventsSharedCollection: IEvent[] = [];
 
   protected bookingService = inject(BookingService);
   protected bookingFormService = inject(BookingFormService);
   protected userService = inject(UserService);
-  protected classSessionService = inject(ClassSessionService);
+  protected eventService = inject(EventService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -38,8 +38,7 @@ export class BookingUpdateComponent implements OnInit {
 
   compareUser = (o1: IUser | null, o2: IUser | null): boolean => this.userService.compareUser(o1, o2);
 
-  compareClassSession = (o1: IClassSession | null, o2: IClassSession | null): boolean =>
-    this.classSessionService.compareClassSession(o1, o2);
+  compareEvent = (o1: IEvent | null, o2: IEvent | null): boolean => this.eventService.compareEvent(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ booking }) => {
@@ -90,10 +89,7 @@ export class BookingUpdateComponent implements OnInit {
     this.bookingFormService.resetForm(this.editForm, booking);
 
     this.usersSharedCollection = this.userService.addUserToCollectionIfMissing<IUser>(this.usersSharedCollection, booking.user);
-    this.classSessionsSharedCollection = this.classSessionService.addClassSessionToCollectionIfMissing<IClassSession>(
-      this.classSessionsSharedCollection,
-      booking.classSession,
-    );
+    this.eventsSharedCollection = this.eventService.addEventToCollectionIfMissing<IEvent>(this.eventsSharedCollection, booking.event);
   }
 
   protected loadRelationshipsOptions(): void {
@@ -103,14 +99,10 @@ export class BookingUpdateComponent implements OnInit {
       .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing<IUser>(users, this.booking?.user)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
 
-    this.classSessionService
+    this.eventService
       .query()
-      .pipe(map((res: HttpResponse<IClassSession[]>) => res.body ?? []))
-      .pipe(
-        map((classSessions: IClassSession[]) =>
-          this.classSessionService.addClassSessionToCollectionIfMissing<IClassSession>(classSessions, this.booking?.classSession),
-        ),
-      )
-      .subscribe((classSessions: IClassSession[]) => (this.classSessionsSharedCollection = classSessions));
+      .pipe(map((res: HttpResponse<IEvent[]>) => res.body ?? []))
+      .pipe(map((events: IEvent[]) => this.eventService.addEventToCollectionIfMissing<IEvent>(events, this.booking?.event)))
+      .subscribe((events: IEvent[]) => (this.eventsSharedCollection = events));
   }
 }

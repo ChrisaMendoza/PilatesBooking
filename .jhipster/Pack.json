@@ -3,6 +3,7 @@
     "changelogDate": "20260113160020"
   },
   "applications": "*",
+  "documentation": "Pack entity",
   "fields": [
     {
       "fieldName": "packName",

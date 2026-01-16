@@ -12,11 +12,11 @@ public class ClassTypeTestSamples {
     private static final AtomicInteger intCount = new AtomicInteger(random.nextInt() + (2 * Short.MAX_VALUE));
 
     public static ClassType getClassTypeSample1() {
-        return new ClassType().id(1L).name("name1").description("description1").duration(1).capacity(1);
+        return new ClassType().id(1L).name("name1").description("description1").capacity(1);
     }
 
     public static ClassType getClassTypeSample2() {
-        return new ClassType().id(2L).name("name2").description("description2").duration(2).capacity(2);
+        return new ClassType().id(2L).name("name2").description("description2").capacity(2);
     }
 
     public static ClassType getClassTypeRandomSampleGenerator() {
@@ -24,7 +24,6 @@ public class ClassTypeTestSamples {
             .id(longCount.incrementAndGet())
             .name(UUID.randomUUID().toString())
             .description(UUID.randomUUID().toString())
-            .duration(intCount.incrementAndGet())
             .capacity(intCount.incrementAndGet());
     }
 }

@@ -3,6 +3,7 @@
     "changelogDate": "20260113160018"
   },
   "applications": "*",
+  "documentation": "Booking entity",
   "fields": [
     {
       "fieldName": "status",
@@ -26,8 +27,8 @@
       "relationshipType": "many-to-one"
     },
     {
-      "otherEntityName": "classSession",
-      "relationshipName": "classSession",
+      "otherEntityName": "event",
+      "relationshipName": "event",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }

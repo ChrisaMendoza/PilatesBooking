@@ -1,7 +1,7 @@
 package com.pilates.booking.domain;
 
 import static com.pilates.booking.domain.BookingTestSamples.*;
-import static com.pilates.booking.domain.ClassSessionTestSamples.*;
+import static com.pilates.booking.domain.EventTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.pilates.booking.web.rest.TestUtil;
@@ -24,14 +24,14 @@ class BookingTest {
     }
 
     @Test
-    void classSessionTest() {
+    void eventTest() {
         Booking booking = getBookingRandomSampleGenerator();
-        ClassSession classSessionBack = getClassSessionRandomSampleGenerator();
+        Event eventBack = getEventRandomSampleGenerator();
 
-        booking.setClassSession(classSessionBack);
-        assertThat(booking.getClassSession()).isEqualTo(classSessionBack);
+        booking.setEvent(eventBack);
+        assertThat(booking.getEvent()).isEqualTo(eventBack);
 
-        booking.classSession(null);
-        assertThat(booking.getClassSession()).isNull();
+        booking.event(null);
+        assertThat(booking.getEvent()).isNull();
     }
 }

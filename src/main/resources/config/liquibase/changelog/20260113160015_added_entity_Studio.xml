@@ -10,7 +10,7 @@
         Added the entity Studio.
     -->
     <changeSet id="20260113160015-1" author="jhipster">
-        <createTable tableName="studio">
+        <createTable tableName="studio" remarks="Studio entity">
             <column name="id" type="bigint" autoIncrement="true" startWith="1500">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

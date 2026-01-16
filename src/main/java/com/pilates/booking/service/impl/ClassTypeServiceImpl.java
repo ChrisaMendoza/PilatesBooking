@@ -50,9 +50,6 @@ public class ClassTypeServiceImpl implements ClassTypeService {
                 if (classType.getDescription() != null) {
                     existingClassType.setDescription(classType.getDescription());
                 }
-                if (classType.getDuration() != null) {
-                    existingClassType.setDuration(classType.getDuration());
-                }
                 if (classType.getCapacity() != null) {
                     existingClassType.setCapacity(classType.getCapacity());
                 }

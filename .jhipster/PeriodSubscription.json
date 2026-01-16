@@ -3,6 +3,7 @@
     "changelogDate": "20260113160019"
   },
   "applications": "*",
+  "documentation": "Period subscription entity (modified by professor)",
   "fields": [
     {
       "fieldName": "subscriptionName",

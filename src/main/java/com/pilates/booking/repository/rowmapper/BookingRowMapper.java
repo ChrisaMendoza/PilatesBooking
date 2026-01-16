@@ -30,7 +30,7 @@ public class BookingRowMapper implements BiFunction<Row, String, Booking> {
         entity.setCreatedAt(converter.fromRow(row, prefix + "_created_at", ZonedDateTime.class));
         entity.setCancelledAt(converter.fromRow(row, prefix + "_cancelled_at", ZonedDateTime.class));
         entity.setUserId(converter.fromRow(row, prefix + "_user_id", Long.class));
-        entity.setClassSessionId(converter.fromRow(row, prefix + "_class_session_id", Long.class));
+        entity.setEventId(converter.fromRow(row, prefix + "_event_id", Long.class));
         return entity;
     }
 }

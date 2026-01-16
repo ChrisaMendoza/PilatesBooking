@@ -20,7 +20,6 @@ type ClassTypeFormGroupContent = {
   id: FormControl<IClassType['id'] | NewClassType['id']>;
   name: FormControl<IClassType['name']>;
   description: FormControl<IClassType['description']>;
-  duration: FormControl<IClassType['duration']>;
   capacity: FormControl<IClassType['capacity']>;
 };
 
@@ -45,9 +44,6 @@ export class ClassTypeFormService {
         validators: [Validators.required],
       }),
       description: new FormControl(classTypeRawValue.description),
-      duration: new FormControl(classTypeRawValue.duration, {
-        validators: [Validators.required],
-      }),
       capacity: new FormControl(classTypeRawValue.capacity),
     });
   }

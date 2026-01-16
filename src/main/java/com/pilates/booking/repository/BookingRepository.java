@@ -20,11 +20,11 @@ public interface BookingRepository extends ReactiveCrudRepository<Booking, Long>
     @Query("SELECT * FROM booking entity WHERE entity.user_id IS NULL")
     Flux<Booking> findAllWhereUserIsNull();
 
-    @Query("SELECT * FROM booking entity WHERE entity.class_session_id = :id")
-    Flux<Booking> findByClassSession(Long id);
+    @Query("SELECT * FROM booking entity WHERE entity.event_id = :id")
+    Flux<Booking> findByEvent(Long id);
 
-    @Query("SELECT * FROM booking entity WHERE entity.class_session_id IS NULL")
-    Flux<Booking> findAllWhereClassSessionIsNull();
+    @Query("SELECT * FROM booking entity WHERE entity.event_id IS NULL")
+    Flux<Booking> findAllWhereEventIsNull();
 
     @Override
     <S extends Booking> Mono<S> save(S entity);

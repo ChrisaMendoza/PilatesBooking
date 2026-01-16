@@ -36,7 +36,7 @@ type BookingFormGroupContent = {
   createdAt: FormControl<BookingFormRawValue['createdAt']>;
   cancelledAt: FormControl<BookingFormRawValue['cancelledAt']>;
   user: FormControl<BookingFormRawValue['user']>;
-  classSession: FormControl<BookingFormRawValue['classSession']>;
+  event: FormControl<BookingFormRawValue['event']>;
 };
 
 export type BookingFormGroup = FormGroup<BookingFormGroupContent>;
@@ -60,7 +60,7 @@ export class BookingFormService {
       createdAt: new FormControl(bookingRawValue.createdAt),
       cancelledAt: new FormControl(bookingRawValue.cancelledAt),
       user: new FormControl(bookingRawValue.user),
-      classSession: new FormControl(bookingRawValue.classSession),
+      event: new FormControl(bookingRawValue.event),
     });
   }
 

@@ -3,6 +3,7 @@
     "changelogDate": "20260113160014"
   },
   "applications": "*",
+  "documentation": "User entity with profile information",
   "entityTableName": "jhi_user",
   "fields": [
     {

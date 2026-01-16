@@ -1,5 +1,6 @@
 package com.pilates.booking.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import org.springframework.data.annotation.Id;
@@ -7,8 +8,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * A Pack.
+ * Pack entity
  */
+@Schema(description = "Pack entity")
 @Table("pack")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Pack implements Serializable {

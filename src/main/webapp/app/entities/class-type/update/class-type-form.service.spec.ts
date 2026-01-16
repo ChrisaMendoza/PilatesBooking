@@ -22,7 +22,6 @@ describe('ClassType Form Service', () => {
             id: expect.any(Object),
             name: expect.any(Object),
             description: expect.any(Object),
-            duration: expect.any(Object),
             capacity: expect.any(Object),
           }),
         );
@@ -36,7 +35,6 @@ describe('ClassType Form Service', () => {
             id: expect.any(Object),
             name: expect.any(Object),
             description: expect.any(Object),
-            duration: expect.any(Object),
             capacity: expect.any(Object),
           }),
         );

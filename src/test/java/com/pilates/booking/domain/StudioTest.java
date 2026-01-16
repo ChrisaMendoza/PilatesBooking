@@ -1,6 +1,7 @@
 package com.pilates.booking.domain;
 
 import static com.pilates.booking.domain.ClassSessionTestSamples.*;
+import static com.pilates.booking.domain.EventTestSamples.*;
 import static com.pilates.booking.domain.StudioTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +24,28 @@ class StudioTest {
 
         studio2 = getStudioSample2();
         assertThat(studio1).isNotEqualTo(studio2);
+    }
+
+    @Test
+    void eventTest() {
+        Studio studio = getStudioRandomSampleGenerator();
+        Event eventBack = getEventRandomSampleGenerator();
+
+        studio.addEvent(eventBack);
+        assertThat(studio.getEvents()).containsOnly(eventBack);
+        assertThat(eventBack.getStudio()).isEqualTo(studio);
+
+        studio.removeEvent(eventBack);
+        assertThat(studio.getEvents()).doesNotContain(eventBack);
+        assertThat(eventBack.getStudio()).isNull();
+
+        studio.events(new HashSet<>(Set.of(eventBack)));
+        assertThat(studio.getEvents()).containsOnly(eventBack);
+        assertThat(eventBack.getStudio()).isEqualTo(studio);
+
+        studio.setEvents(new HashSet<>());
+        assertThat(studio.getEvents()).doesNotContain(eventBack);
+        assertThat(eventBack.getStudio()).isNull();
     }
 
     @Test

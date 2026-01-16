@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "changelogDate": "20260116125455"
+  },
+  "applications": "*",
+  "documentation": "Event entity (formerly ClassSession)",
+  "fields": [
+    {
+      "fieldName": "coachName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startAt",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "endAt",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "capacity",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Event",
+  "relationships": [
+    {
+      "otherEntityName": "studio",
+      "otherEntityRelationshipName": "event",
+      "relationshipName": "studio",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "classType",
+      "otherEntityRelationshipName": "event",
+      "relationshipName": "classType",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

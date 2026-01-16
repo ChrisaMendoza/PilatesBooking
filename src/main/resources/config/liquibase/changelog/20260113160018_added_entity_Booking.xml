@@ -10,7 +10,7 @@
         Added the entity Booking.
     -->
     <changeSet id="20260113160018-1" author="jhipster">
-        <createTable tableName="booking">
+        <createTable tableName="booking" remarks="Booking entity">
             <column name="id" type="bigint" autoIncrement="true" startWith="1500">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -26,7 +26,7 @@
             <column name="user_id" type="bigint">
                 <constraints nullable="true" />
             </column>
-            <column name="class_session_id" type="bigint">
+            <column name="event_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->

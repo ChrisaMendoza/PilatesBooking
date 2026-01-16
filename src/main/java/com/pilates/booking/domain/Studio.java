@@ -1,6 +1,7 @@
 package com.pilates.booking.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -10,8 +11,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * A Studio.
+ * Studio entity
  */
+@Schema(description = "Studio entity")
 @Table("studio")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Studio implements Serializable {
@@ -31,6 +33,10 @@ public class Studio implements Serializable {
 
     @Column("category")
     private String category;
+
+    @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "studio", "classType" }, allowSetters = true)
+    private Set<Event> events = new HashSet<>();
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "studio", "classType" }, allowSetters = true)
@@ -88,6 +94,37 @@ public class Studio implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Set<Event> getEvents() {
+        return this.events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        if (this.events != null) {
+            this.events.forEach(i -> i.setStudio(null));
+        }
+        if (events != null) {
+            events.forEach(i -> i.setStudio(this));
+        }
+        this.events = events;
+    }
+
+    public Studio events(Set<Event> events) {
+        this.setEvents(events);
+        return this;
+    }
+
+    public Studio addEvent(Event event) {
+        this.events.add(event);
+        event.setStudio(this);
+        return this;
+    }
+
+    public Studio removeEvent(Event event) {
+        this.events.remove(event);
+        event.setStudio(null);
+        return this;
     }
 
     public Set<ClassSession> getClassSessions() {

@@ -2,6 +2,7 @@ package com.pilates.booking.domain;
 
 import static com.pilates.booking.domain.ClassSessionTestSamples.*;
 import static com.pilates.booking.domain.ClassTypeTestSamples.*;
+import static com.pilates.booking.domain.EventTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.pilates.booking.web.rest.TestUtil;
@@ -23,6 +24,28 @@ class ClassTypeTest {
 
         classType2 = getClassTypeSample2();
         assertThat(classType1).isNotEqualTo(classType2);
+    }
+
+    @Test
+    void eventTest() {
+        ClassType classType = getClassTypeRandomSampleGenerator();
+        Event eventBack = getEventRandomSampleGenerator();
+
+        classType.addEvent(eventBack);
+        assertThat(classType.getEvents()).containsOnly(eventBack);
+        assertThat(eventBack.getClassType()).isEqualTo(classType);
+
+        classType.removeEvent(eventBack);
+        assertThat(classType.getEvents()).doesNotContain(eventBack);
+        assertThat(eventBack.getClassType()).isNull();
+
+        classType.events(new HashSet<>(Set.of(eventBack)));
+        assertThat(classType.getEvents()).containsOnly(eventBack);
+        assertThat(eventBack.getClassType()).isEqualTo(classType);
+
+        classType.setEvents(new HashSet<>());
+        assertThat(classType.getEvents()).doesNotContain(eventBack);
+        assertThat(eventBack.getClassType()).isNull();
     }
 
     @Test

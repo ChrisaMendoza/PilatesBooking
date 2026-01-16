@@ -17,11 +17,11 @@
                                  referencedTableName="jhi_user"
                                  />
 
-        <addForeignKeyConstraint baseColumnNames="class_session_id"
+        <addForeignKeyConstraint baseColumnNames="event_id"
                                  baseTableName="booking"
-                                 constraintName="fk_booking__class_session_id"
+                                 constraintName="fk_booking__event_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="class_session"
+                                 referencedTableName="event"
                                  />
     </changeSet>
 </databaseChangeLog>

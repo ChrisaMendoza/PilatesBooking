@@ -31,11 +31,11 @@
           <dd>
             <span>{{ bookingRef.user?.id }}</span>
           </dd>
-          <dt><span>Class Session</span></dt>
+          <dt><span>Event</span></dt>
           <dd>
-            @if (booking()!.classSession) {
+            @if (booking()!.event) {
               <div>
-                <a [routerLink]="['/class-session', booking()!.classSession?.id, 'view']">{{ bookingRef.classSession?.id }}</a>
+                <a [routerLink]="['/event', booking()!.event?.id, 'view']">{{ bookingRef.event?.id }}</a>
               </div>
             }
           </dd>

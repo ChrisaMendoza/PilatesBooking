@@ -1,6 +1,7 @@
 package com.pilates.booking.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import org.springframework.data.annotation.Id;
@@ -8,8 +9,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * A Booking.
+ * Booking entity
  */
+@Schema(description = "Booking entity")
 @Table("booking")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Booking implements Serializable {
@@ -34,13 +36,13 @@ public class Booking implements Serializable {
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "studio", "classType" }, allowSetters = true)
-    private ClassSession classSession;
+    private Event event;
 
     @Column("user_id")
     private Long userId;
 
-    @Column("class_session_id")
-    private Long classSessionId;
+    @Column("event_id")
+    private Long eventId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -110,17 +112,17 @@ public class Booking implements Serializable {
         return this;
     }
 
-    public ClassSession getClassSession() {
-        return this.classSession;
+    public Event getEvent() {
+        return this.event;
     }
 
-    public void setClassSession(ClassSession classSession) {
-        this.classSession = classSession;
-        this.classSessionId = classSession != null ? classSession.getId() : null;
+    public void setEvent(Event event) {
+        this.event = event;
+        this.eventId = event != null ? event.getId() : null;
     }
 
-    public Booking classSession(ClassSession classSession) {
-        this.setClassSession(classSession);
+    public Booking event(Event event) {
+        this.setEvent(event);
         return this;
     }
 
@@ -132,12 +134,12 @@ public class Booking implements Serializable {
         this.userId = user;
     }
 
-    public Long getClassSessionId() {
-        return this.classSessionId;
+    public Long getEventId() {
+        return this.eventId;
     }
 
-    public void setClassSessionId(Long classSession) {
-        this.classSessionId = classSession;
+    public void setEventId(Long event) {
+        this.eventId = event;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

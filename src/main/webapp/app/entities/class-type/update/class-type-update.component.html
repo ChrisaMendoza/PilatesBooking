@@ -38,22 +38,6 @@
           />
         </div>
 
-        @let durationRef = editForm.get('duration')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_duration">Duration</label>
-          <input type="number" class="form-control" name="duration" id="field_duration" data-cy="duration" formControlName="duration" />
-          @if (durationRef.invalid && (durationRef.dirty || durationRef.touched)) {
-            <div>
-              @if (editForm.get('duration')?.errors?.required) {
-                <small class="form-text text-danger">Ce champ est obligatoire.</small>
-              }
-              <small class="form-text text-danger" [hidden]="!editForm.get('duration')?.errors?.number"
-                >Ce champ doit être un nombre.</small
-              >
-            </div>
-          }
-        </div>
-
         <div class="mb-3">
           <label class="form-label" for="field_capacity">Capacity</label>
           <input type="number" class="form-control" name="capacity" id="field_capacity" data-cy="capacity" formControlName="capacity" />

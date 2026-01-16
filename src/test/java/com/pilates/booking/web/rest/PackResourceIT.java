@@ -440,7 +440,7 @@ class PackResourceIT {
         Pack partialUpdatedPack = new Pack();
         partialUpdatedPack.setId(pack.getId());
 
-        partialUpdatedPack.description(UPDATED_DESCRIPTION).billingPeriod(UPDATED_BILLING_PERIOD).validityDays(UPDATED_VALIDITY_DAYS);
+        partialUpdatedPack.description(UPDATED_DESCRIPTION).validityDays(UPDATED_VALIDITY_DAYS);
 
         webTestClient
             .patch()
