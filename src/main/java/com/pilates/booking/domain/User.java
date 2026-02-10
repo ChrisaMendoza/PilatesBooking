@@ -74,6 +74,9 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Column("reset_date")
     private Instant resetDate = null;
 
+    @Column("balance_cents")
+    private Long balanceCents = 0L;
+
     @JsonIgnore
     @org.springframework.data.annotation.Transient
     private Set<Authority> authorities = new HashSet<>();
@@ -175,6 +178,14 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.langKey = langKey;
     }
 
+    public Long getBalanceCents() {
+        return balanceCents;
+    }
+
+    public void setBalanceCents(Long balanceCents) {
+        this.balanceCents = balanceCents;
+    }
+
     public Set<Authority> getAuthorities() {
         return authorities;
     }
@@ -212,6 +223,7 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
             ", activated='" + activated + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +
+            ", balanceCents='" + balanceCents + '\'' +
             "}";
     }
 }

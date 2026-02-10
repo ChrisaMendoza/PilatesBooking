@@ -48,7 +48,8 @@ public class BookingResource {
      * {@code POST  /bookings} : Create a new booking.
      *
      * @param booking the booking to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new booking, or with status {@code 400 (Bad Request)} if the booking has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new booking,
+     * or with status {@code 400 (Bad Request)} if the booking has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
@@ -72,13 +73,6 @@ public class BookingResource {
 
     /**
      * {@code PUT  /bookings/:id} : Updates an existing booking.
-     *
-     * @param id the id of the booking to save.
-     * @param booking the booking to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated booking,
-     * or with status {@code 400 (Bad Request)} if the booking is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the booking couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Booking>> updateBooking(
@@ -112,15 +106,7 @@ public class BookingResource {
     }
 
     /**
-     * {@code PATCH  /bookings/:id} : Partial updates given fields of an existing booking, field will ignore if it is null
-     *
-     * @param id the id of the booking to save.
-     * @param booking the booking to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated booking,
-     * or with status {@code 400 (Bad Request)} if the booking is not valid,
-     * or with status {@code 404 (Not Found)} if the booking is not found,
-     * or with status {@code 500 (Internal Server Error)} if the booking couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * {@code PATCH  /bookings/:id} : Partial updates given fields of an existing booking.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Booking>> partialUpdateBooking(
@@ -155,9 +141,22 @@ public class BookingResource {
     }
 
     /**
+     * Métier annulation.
+     */
+    @PostMapping("/{id}/cancel")
+    public Mono<ResponseEntity<Booking>> cancelBooking(@PathVariable("id") Long id) {
+        LOG.debug("REST request to cancel Booking : {}", id);
+        return bookingService
+            .cancel(id)
+            .map(result ->
+                ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                    .body(result)
+            );
+    }
+
+    /**
      * {@code GET  /bookings} : get all the bookings.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of bookings in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<List<Booking>> getAllBookings() {
@@ -167,7 +166,6 @@ public class BookingResource {
 
     /**
      * {@code GET  /bookings} : get all the bookings as a stream.
-     * @return the {@link Flux} of bookings.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<Booking> getAllBookingsAsStream() {
@@ -177,9 +175,6 @@ public class BookingResource {
 
     /**
      * {@code GET  /bookings/:id} : get the "id" booking.
-     *
-     * @param id the id of the booking to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the booking, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Booking>> getBooking(@PathVariable("id") Long id) {
@@ -190,9 +185,6 @@ public class BookingResource {
 
     /**
      * {@code DELETE  /bookings/:id} : delete the "id" booking.
-     *
-     * @param id the id of the booking to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> deleteBooking(@PathVariable("id") Long id) {

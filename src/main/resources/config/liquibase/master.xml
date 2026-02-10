@@ -26,6 +26,8 @@
     <include file="config/liquibase/changelog/20260113160019_added_entity_constraints_PeriodSubscription.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260113160020_added_entity_constraints_Pack.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260116125455_added_entity_constraints_Event.xml" relativeToChangelogFile="false"/>
-    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <include file="config/liquibase/changelog/20260210120000_add_waitlist_and_user_balance.xml" relativeToChangelogFile="false"/>
+
+  <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

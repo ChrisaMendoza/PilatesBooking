@@ -2,7 +2,7 @@ package com.pilates.booking.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import org.springframework.data.annotation.Id;
@@ -41,6 +41,10 @@ public class Event implements Serializable {
     @Column("status")
     private String status;
 
+    @NotNull(message = "must not be null")
+    @Column("waitlist_open")
+    private Boolean waitlistOpen = Boolean.FALSE;
+
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "events", "classSessions" }, allowSetters = true)
     private Studio studio;
@@ -54,8 +58,6 @@ public class Event implements Serializable {
 
     @Column("class_type_id")
     private Long classTypeId;
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
         return this.id;
@@ -135,6 +137,19 @@ public class Event implements Serializable {
         this.status = status;
     }
 
+    public Boolean getWaitlistOpen() {
+        return waitlistOpen;
+    }
+
+    public void setWaitlistOpen(Boolean waitlistOpen) {
+        this.waitlistOpen = waitlistOpen;
+    }
+
+    public Event waitlistOpen(Boolean waitlistOpen) {
+        this.setWaitlistOpen(waitlistOpen);
+        return this;
+    }
+
     public Studio getStudio() {
         return this.studio;
     }
@@ -179,8 +194,6 @@ public class Event implements Serializable {
         this.classTypeId = classType;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -194,11 +207,9 @@ public class Event implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Event{" +
@@ -208,6 +219,7 @@ public class Event implements Serializable {
             ", endAt='" + getEndAt() + "'" +
             ", capacity=" + getCapacity() +
             ", status='" + getStatus() + "'" +
+            ", waitlistOpen='" + getWaitlistOpen() + "'" +
             "}";
     }
 }

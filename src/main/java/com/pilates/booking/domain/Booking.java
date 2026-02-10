@@ -121,10 +121,16 @@ public class Booking implements Serializable {
         this.eventId = event != null ? event.getId() : null;
     }
 
-    public Booking event(Event event) {
-        this.setEvent(event);
+    public Booking eventId(Long eventId) {
+        this.setEventId(eventId);
         return this;
     }
+
+    public Booking userId(Long userId) {
+        this.setUserId(userId);
+        return this;
+    }
+
 
     public Long getUserId() {
         return this.userId;

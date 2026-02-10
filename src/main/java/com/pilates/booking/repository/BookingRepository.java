@@ -26,6 +26,12 @@ public interface BookingRepository extends ReactiveCrudRepository<Booking, Long>
     @Query("SELECT * FROM booking entity WHERE entity.event_id IS NULL")
     Flux<Booking> findAllWhereEventIsNull();
 
+    Mono<Long> countByEventIdAndStatus(Long eventId, String status);
+
+    Flux<Booking> findAllByEventId(Long eventId);
+
+    Flux<Booking> findAllByUserId(Long userId);
+
     @Override
     <S extends Booking> Mono<S> save(S entity);
 
@@ -47,6 +53,4 @@ interface BookingRepositoryInternal {
     Flux<Booking> findAll();
 
     Mono<Booking> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Booking> findAllBy(Pageable pageable, Criteria criteria);
 }
