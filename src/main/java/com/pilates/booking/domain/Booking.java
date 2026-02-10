@@ -121,6 +121,11 @@ public class Booking implements Serializable {
         this.eventId = event != null ? event.getId() : null;
     }
 
+    public Booking event(Event event) {
+        this.setEvent(event);
+        return this;
+    }
+
     public Booking eventId(Long eventId) {
         this.setEventId(eventId);
         return this;
@@ -130,7 +135,6 @@ public class Booking implements Serializable {
         this.setUserId(userId);
         return this;
     }
-
 
     public Long getUserId() {
         return this.userId;

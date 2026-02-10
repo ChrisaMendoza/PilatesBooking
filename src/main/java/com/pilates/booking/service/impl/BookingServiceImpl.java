@@ -1,9 +1,12 @@
 package com.pilates.booking.service.impl;
 
 import com.pilates.booking.domain.Booking;
+import com.pilates.booking.domain.User;
 import com.pilates.booking.repository.BookingRepository;
 import com.pilates.booking.repository.EventRepository;
 import com.pilates.booking.repository.UserRepository;
+import com.pilates.booking.security.AuthoritiesConstants;
+import com.pilates.booking.security.SecurityUtils;
 import com.pilates.booking.service.BookingService;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -42,6 +45,34 @@ public class BookingServiceImpl implements BookingService {
         this.userRepository = userRepository;
     }
 
+    private Mono<Boolean> isAdmin() {
+        return SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN).defaultIfEmpty(false);
+    }
+
+    private Mono<Long> getCurrentUserIdOrFail() {
+        return SecurityUtils.getCurrentUserId()
+            .switchIfEmpty(
+                SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin).map(User::getId).switchIfEmpty(Mono.empty())
+            )
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current user not available")));
+    }
+
+    private Mono<Void> assertCurrentUserCanAccessBooking(Booking booking) {
+        return isAdmin()
+            .flatMap(admin -> {
+                if (admin) {
+                    return Mono.empty();
+                }
+                return getCurrentUserIdOrFail()
+                    .flatMap(currentUserId -> {
+                        if (booking.getUserId() != null && booking.getUserId().equals(currentUserId)) {
+                            return Mono.empty();
+                        }
+                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden"));
+                    });
+            });
+    }
+
     @Override
     public Mono<Booking> save(Booking booking) {
         LOG.debug("Request to save Booking with business checks : {}", booking);
@@ -49,81 +80,122 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getEventId() == null) {
             return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "eventId is required"));
         }
-        if (booking.getUserId() == null) {
-            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId is required"));
-        }
 
-        return eventRepository
-            .findById(booking.getEventId())
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event not found")))
-            .flatMap(event -> {
-                ZonedDateTime now = ZonedDateTime.now();
+        Mono<Long> effectiveUserIdMono = Mono.defer(() -> {
+            Long requestedUserId = booking.getUserId();
+            if (requestedUserId == null) {
+                return getCurrentUserIdOrFail().doOnNext(booking::setUserId);
+            }
 
-                // séance doit être dans le futur
-                if (!event.getStartAt().isAfter(now)) {
-                    return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot book past or ongoing event"));
-                }
-
-                return bookingRepository.countByEventIdAndStatus(event.getId(), STATUS_BOOKED).flatMap(bookedCount -> {
-                    booking.setCreatedAt(now);
-                    booking.setCancelledAt(null);
-
-                    // capacité dispo
-                    if (bookedCount < event.getCapacity()) {
-                        booking.setStatus(STATUS_BOOKED);
-                        return bookingRepository.save(booking);
+            return isAdmin()
+                .flatMap(admin -> {
+                    if (admin) {
+                        return Mono.just(requestedUserId);
                     }
-
-                    // capacité pleine -> FULL si waitlist ouverte
-                    if (Boolean.TRUE.equals(event.getWaitlistOpen())) {
-                        booking.setStatus(STATUS_FULL);
-                        return bookingRepository.save(booking);
-                    }
-
-                    // capacité pleine et waitlist fermée -> refus
-                    return Mono.error(new ResponseStatusException(HttpStatus.CONFLICT, "Session is full and waitlist is closed"));
+                    return getCurrentUserIdOrFail()
+                        .flatMap(currentUserId -> {
+                            if (requestedUserId.equals(currentUserId)) {
+                                return Mono.just(requestedUserId);
+                            }
+                            return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot create booking for another user"));
+                        });
                 });
-            });
+        });
+
+        return effectiveUserIdMono.then(
+            eventRepository
+                .findById(booking.getEventId())
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event not found")))
+                .flatMap(event -> {
+                    ZonedDateTime now = ZonedDateTime.now();
+
+                    // séance doit être dans le futur
+                    if (!event.getStartAt().isAfter(now)) {
+                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot book past or ongoing event"));
+                    }
+
+                    return bookingRepository
+                        .countByEventIdAndStatus(event.getId(), STATUS_BOOKED)
+                        .flatMap(bookedCount -> {
+                            booking.setCreatedAt(now);
+                            booking.setCancelledAt(null);
+
+                            // capacité dispo
+                            if (bookedCount < event.getCapacity()) {
+                                booking.setStatus(STATUS_BOOKED);
+                                return bookingRepository.save(booking);
+                            }
+
+                            // capacité pleine -> FULL si waitlist ouverte
+                            if (Boolean.TRUE.equals(event.getWaitlistOpen())) {
+                                booking.setStatus(STATUS_FULL);
+                                return bookingRepository.save(booking);
+                            }
+
+                            // capacité pleine et waitlist fermée -> refus
+                            return Mono.error(new ResponseStatusException(HttpStatus.CONFLICT, "Session is full and waitlist is closed"));
+                        });
+                })
+        );
     }
 
     @Override
     public Mono<Booking> update(Booking booking) {
         LOG.debug("Request to update Booking : {}", booking);
-        return bookingRepository.save(booking);
+        return isAdmin()
+            .flatMap(admin -> {
+                if (!admin) {
+                    return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admins can update bookings"));
+                }
+                return bookingRepository.save(booking);
+            });
     }
 
     @Override
     public Mono<Booking> partialUpdate(Booking booking) {
         LOG.debug("Request to partially update Booking : {}", booking);
 
-        return bookingRepository
-            .findById(booking.getId())
-            .map(existingBooking -> {
-                if (booking.getStatus() != null) {
-                    existingBooking.setStatus(booking.getStatus());
+        return isAdmin()
+            .flatMap(admin -> {
+                if (!admin) {
+                    return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admins can update bookings"));
                 }
-                if (booking.getCreatedAt() != null) {
-                    existingBooking.setCreatedAt(booking.getCreatedAt());
-                }
-                if (booking.getCancelledAt() != null) {
-                    existingBooking.setCancelledAt(booking.getCancelledAt());
-                }
-                if (booking.getUserId() != null) {
-                    existingBooking.setUserId(booking.getUserId());
-                }
-                if (booking.getEventId() != null) {
-                    existingBooking.setEventId(booking.getEventId());
-                }
-                return existingBooking;
-            })
-            .flatMap(bookingRepository::save);
+
+                return bookingRepository
+                    .findById(booking.getId())
+                    .map(existingBooking -> {
+                        if (booking.getStatus() != null) {
+                            existingBooking.setStatus(booking.getStatus());
+                        }
+                        if (booking.getCreatedAt() != null) {
+                            existingBooking.setCreatedAt(booking.getCreatedAt());
+                        }
+                        if (booking.getCancelledAt() != null) {
+                            existingBooking.setCancelledAt(booking.getCancelledAt());
+                        }
+                        if (booking.getUserId() != null) {
+                            existingBooking.setUserId(booking.getUserId());
+                        }
+                        if (booking.getEventId() != null) {
+                            existingBooking.setEventId(booking.getEventId());
+                        }
+                        return existingBooking;
+                    })
+                    .flatMap(bookingRepository::save);
+            });
     }
 
     @Override
     @Transactional(readOnly = true)
     public Flux<Booking> findAll() {
         LOG.debug("Request to get all Bookings");
-        return bookingRepository.findAll();
+        return isAdmin()
+            .flatMapMany(admin -> {
+                if (admin) {
+                    return bookingRepository.findAll();
+                }
+                return getCurrentUserIdOrFail().flatMapMany(bookingRepository::findAllByUserId);
+            });
     }
 
     @Override
@@ -135,13 +207,19 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     public Mono<Booking> findOne(Long id) {
         LOG.debug("Request to get Booking : {}", id);
-        return bookingRepository.findById(id);
+        return bookingRepository
+            .findById(id)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")))
+            .flatMap(booking -> assertCurrentUserCanAccessBooking(booking).thenReturn(booking));
     }
 
     @Override
     public Mono<Void> delete(Long id) {
         LOG.debug("Request to delete Booking : {}", id);
-        return bookingRepository.deleteById(id);
+        return bookingRepository
+            .findById(id)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")))
+            .flatMap(booking -> assertCurrentUserCanAccessBooking(booking).then(bookingRepository.deleteById(id)));
     }
 
     @Override
@@ -151,6 +229,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository
             .findById(id)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")))
+            .flatMap(booking -> assertCurrentUserCanAccessBooking(booking).thenReturn(booking))
             .flatMap(booking ->
                 eventRepository
                     .findById(booking.getEventId())

@@ -94,7 +94,9 @@ spring:
     name: pilatesBooking
   docker:
     compose:
-      enabled: true
+      # Avoid hard dependency on local Docker socket. Enable via env if desired:
+      # SPRING_DOCKER_COMPOSE_ENABLED=true
+      enabled: false
       lifecycle-management: start-only
       file: src/main/docker/services.yml
   profiles:
