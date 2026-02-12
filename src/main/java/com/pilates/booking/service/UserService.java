@@ -124,8 +124,8 @@ public class UserService {
                     }
                     newUser.setImageUrl(userDTO.getImageUrl());
                     newUser.setLangKey(userDTO.getLangKey());
-                    // new user is not active
-                    newUser.setActivated(false);
+                    // new user is active by default in dev/simplified flow
+                    newUser.setActivated(true);
                     // new user gets registration key
                     newUser.setActivationKey(RandomUtil.generateActivationKey());
                     return newUser;

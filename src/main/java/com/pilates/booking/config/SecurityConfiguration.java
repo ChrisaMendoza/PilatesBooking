@@ -50,9 +50,7 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
             .securityMatcher(
-                new NegatedServerWebExchangeMatcher(
-                    new OrServerWebExchangeMatcher(pathMatchers("/app/**", "/i18n/**", "/content/**", "/swagger-ui/**"))
-                )
+                new NegatedServerWebExchangeMatcher(new OrServerWebExchangeMatcher(pathMatchers("/app/**", "/i18n/**", "/content/**")))
             )
             .cors(withDefaults())
             .csrf(csrf -> csrf.disable())
@@ -73,22 +71,24 @@ public class SecurityConfiguration {
             .authorizeExchange(authz ->
                 // prettier-ignore
                 authz
-                    .pathMatchers("/").permitAll()
-                    .pathMatchers("/*.*").permitAll()
-                    .pathMatchers("/api/authenticate").permitAll()
-                    .pathMatchers("/api/register").permitAll()
-                    .pathMatchers("/api/activate").permitAll()
-                    .pathMatchers("/api/account/reset-password/init").permitAll()
-                    .pathMatchers("/api/account/reset-password/finish").permitAll()
-                    .pathMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
-                    .pathMatchers("/api/**").authenticated()
-                    .pathMatchers("/services/**").authenticated()
-                    .pathMatchers("/v3/api-docs/**").hasAuthority(AuthoritiesConstants.ADMIN)
-                    .pathMatchers("/management/health").permitAll()
-                    .pathMatchers("/management/health/**").permitAll()
-                    .pathMatchers("/management/info").permitAll()
-                    .pathMatchers("/management/prometheus").permitAll()
-                    .pathMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                        .pathMatchers("/").permitAll()
+                        .pathMatchers("/*.*").permitAll()
+                        .pathMatchers("/api/authenticate").permitAll()
+                        .pathMatchers("/api/register").permitAll()
+                        .pathMatchers("/api/activate").permitAll()
+                        .pathMatchers("/api/account/reset-password/init").permitAll()
+                        .pathMatchers("/api/account/reset-password/finish").permitAll()
+                        .pathMatchers("/api/admin/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                        .pathMatchers("/api/**").authenticated()
+                        .pathMatchers("/services/**").authenticated()
+                        .pathMatchers("/v3/api-docs/**").permitAll()
+                        .pathMatchers("/swagger-ui/**").permitAll()
+                        .pathMatchers("/management/jhiopenapigroups").permitAll()
+                        .pathMatchers("/management/health").permitAll()
+                        .pathMatchers("/management/health/**").permitAll()
+                        .pathMatchers("/management/info").permitAll()
+                        .pathMatchers("/management/prometheus").permitAll()
+                        .pathMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             )
             .httpBasic(basic -> basic.disable())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));

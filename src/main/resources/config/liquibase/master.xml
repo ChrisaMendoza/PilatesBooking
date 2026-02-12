@@ -8,11 +8,10 @@
     <property name="clobType" value="clob" dbms="postgresql"/>
     <property name="blobType" value="bytea" dbms="postgresql"/>
     <property name="uuidType" value="uuid" dbms="postgresql"/>
-    <property name="datetimeType" value="datetime" dbms="postgresql"/>
+    <property name="datetimeType" value="timestamp" dbms="postgresql"/>
     <property name="timeType" value="time(6)" dbms="postgresql"/>
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20260113160014_added_entity_User.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260113160015_added_entity_Studio.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260113160016_added_entity_ClassType.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260113160017_added_entity_ClassSession.xml" relativeToChangelogFile="false"/>
