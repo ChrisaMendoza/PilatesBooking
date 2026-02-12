@@ -1,0 +1,152 @@
+diff --git a/src/main/java/com/pilates/booking/domain/User.java b/src/main/java/com/pilates/booking/domain/User.java
+index 053f7481a5166c61cb586905d0afc3ae68e9a75a..33dd4d1de9d383d5449fd404c36a73cc31ccb9f1 100644
+--- a/src/main/java/com/pilates/booking/domain/User.java
++++ b/src/main/java/com/pilates/booking/domain/User.java
+@@ -28,50 +28,53 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
+     private Long id;
+ 
+     @NotNull
+     @Pattern(regexp = Constants.LOGIN_REGEX)
+     @Size(min = 1, max = 50)
+     private String login;
+ 
+     @JsonIgnore
+     @NotNull
+     @Size(min = 60, max = 60)
+     @Column("password_hash")
+     private String password;
+ 
+     @Size(max = 50)
+     @Column("first_name")
+     private String firstName;
+ 
+     @Size(max = 50)
+     @Column("last_name")
+     private String lastName;
+ 
+     @Email
+     @Size(min = 5, max = 254)
+     private String email;
+ 
++    @Size(max = 50)
++    private String phone;
++
+     @NotNull
+     private boolean activated = false;
+ 
+     @Size(min = 2, max = 10)
+     @Column("lang_key")
+     private String langKey;
+ 
+     @Size(max = 256)
+     @Column("image_url")
+     private String imageUrl;
+ 
+     @Size(max = 20)
+     @Column("activation_key")
+     @JsonIgnore
+     private String activationKey;
+ 
+     @Size(max = 20)
+     @Column("reset_key")
+     @JsonIgnore
+     private String resetKey;
+ 
+     @Column("reset_date")
+     private Instant resetDate = null;
+ 
+     @Column("balance_cents")
+@@ -108,50 +111,58 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
+ 
+     public String getFirstName() {
+         return firstName;
+     }
+ 
+     public void setFirstName(String firstName) {
+         this.firstName = firstName;
+     }
+ 
+     public String getLastName() {
+         return lastName;
+     }
+ 
+     public void setLastName(String lastName) {
+         this.lastName = lastName;
+     }
+ 
+     public String getEmail() {
+         return email;
+     }
+ 
+     public void setEmail(String email) {
+         this.email = email;
+     }
+ 
++    public String getPhone() {
++        return phone;
++    }
++
++    public void setPhone(String phone) {
++        this.phone = phone;
++    }
++
+     public String getImageUrl() {
+         return imageUrl;
+     }
+ 
+     public void setImageUrl(String imageUrl) {
+         this.imageUrl = imageUrl;
+     }
+ 
+     public boolean isActivated() {
+         return activated;
+     }
+ 
+     public void setActivated(boolean activated) {
+         this.activated = activated;
+     }
+ 
+     public String getActivationKey() {
+         return activationKey;
+     }
+ 
+     public void setActivationKey(String activationKey) {
+         this.activationKey = activationKey;
+     }
+ 
+     public String getResetKey() {
+@@ -197,33 +208,34 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
+     @Override
+     public boolean equals(Object o) {
+         if (this == o) {
+             return true;
+         }
+         if (!(o instanceof User)) {
+             return false;
+         }
+         return id != null && id.equals(((User) o).id);
+     }
+ 
+     @Override
+     public int hashCode() {
+         // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+         return getClass().hashCode();
+     }
+ 
+     // prettier-ignore
+     @Override
+     public String toString() {
+         return "User{" +
+             "login='" + login + '\'' +
+             ", firstName='" + firstName + '\'' +
+             ", lastName='" + lastName + '\'' +
+             ", email='" + email + '\'' +
++            ", phone='" + phone + '\'' +
+             ", imageUrl='" + imageUrl + '\'' +
+             ", activated='" + activated + '\'' +
+             ", langKey='" + langKey + '\'' +
+             ", activationKey='" + activationKey + '\'' +
+             ", balanceCents='" + balanceCents + '\'' +
+             "}";
+     }
+ }
