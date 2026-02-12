@@ -1,0 +1,56 @@
+diff --git a/src/main/java/com/pilates/booking/service/mapper/UserMapper.java b/src/main/java/com/pilates/booking/service/mapper/UserMapper.java
+index d19d39a409da06a09942f0767b132c19327aa11e..80f27199c3c3151ba58a0afe9bcc6e8a14dd51eb 100644
+--- a/src/main/java/com/pilates/booking/service/mapper/UserMapper.java
++++ b/src/main/java/com/pilates/booking/service/mapper/UserMapper.java
+@@ -28,50 +28,51 @@ public class UserMapper {
+         return new UserDTO(user);
+     }
+ 
+     public List<AdminUserDTO> usersToAdminUserDTOs(List<User> users) {
+         return users.stream().filter(Objects::nonNull).map(this::userToAdminUserDTO).toList();
+     }
+ 
+     public AdminUserDTO userToAdminUserDTO(User user) {
+         return new AdminUserDTO(user);
+     }
+ 
+     public List<User> userDTOsToUsers(List<AdminUserDTO> userDTOs) {
+         return userDTOs.stream().filter(Objects::nonNull).map(this::userDTOToUser).toList();
+     }
+ 
+     public User userDTOToUser(AdminUserDTO userDTO) {
+         if (userDTO == null) {
+             return null;
+         } else {
+             User user = new User();
+             user.setId(userDTO.getId());
+             user.setLogin(userDTO.getLogin());
+             user.setFirstName(userDTO.getFirstName());
+             user.setLastName(userDTO.getLastName());
+             user.setEmail(userDTO.getEmail());
++            user.setPhone(userDTO.getPhone());
+             user.setImageUrl(userDTO.getImageUrl());
+             user.setCreatedBy(userDTO.getCreatedBy());
+             user.setCreatedDate(userDTO.getCreatedDate());
+             user.setLastModifiedBy(userDTO.getLastModifiedBy());
+             user.setLastModifiedDate(userDTO.getLastModifiedDate());
+             user.setActivated(userDTO.isActivated());
+             user.setLangKey(userDTO.getLangKey());
+             Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
+             user.setAuthorities(authorities);
+             return user;
+         }
+     }
+ 
+     private Set<Authority> authoritiesFromStrings(Set<String> authoritiesAsString) {
+         Set<Authority> authorities = new HashSet<>();
+ 
+         if (authoritiesAsString != null) {
+             authorities = authoritiesAsString
+                 .stream()
+                 .map(string -> {
+                     Authority auth = new Authority();
+                     auth.setName(string);
+                     return auth;
+                 })
+                 .collect(Collectors.toSet());

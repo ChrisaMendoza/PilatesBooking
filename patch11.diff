@@ -1,0 +1,58 @@
+diff --git a/src/main/java/com/pilates/booking/web/rest/errors/ExceptionTranslator.java b/src/main/java/com/pilates/booking/web/rest/errors/ExceptionTranslator.java
+index 23d30bc55b22a00cd9501db18fb080cdafe61ccf..5217c66a1f20d6207a20eac63e0a44a3fa29464a 100644
+--- a/src/main/java/com/pilates/booking/web/rest/errors/ExceptionTranslator.java
++++ b/src/main/java/com/pilates/booking/web/rest/errors/ExceptionTranslator.java
+@@ -82,50 +82,53 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
+         @Nullable Object body,
+         HttpHeaders headers,
+         HttpStatusCode statusCode,
+         ServerWebExchange request
+     ) {
+         body = body == null ? wrapAndCustomizeProblem((Throwable) ex, (ServerWebExchange) request) : body;
+         if (request.getResponse().isCommitted()) {
+             return Mono.error(ex);
+         }
+         return Mono.just(
+             new ResponseEntity<>(body, updateContentType(headers), HttpStatusCode.valueOf(((ProblemDetailWithCause) body).getStatus()))
+         );
+     }
+ 
+     protected ProblemDetailWithCause wrapAndCustomizeProblem(Throwable ex, ServerWebExchange request) {
+         return customizeProblem(getProblemDetailWithCause(ex), ex, request);
+     }
+ 
+     private ProblemDetailWithCause getProblemDetailWithCause(Throwable ex) {
+         if (
+             ex instanceof com.pilates.booking.service.UsernameAlreadyUsedException
+         ) return (ProblemDetailWithCause) new LoginAlreadyUsedException().getBody();
+         if (
+             ex instanceof com.pilates.booking.service.EmailAlreadyUsedException
+         ) return (ProblemDetailWithCause) new EmailAlreadyUsedException().getBody();
++        if (
++            ex instanceof com.pilates.booking.service.PhoneAlreadyUsedException
++        ) return (ProblemDetailWithCause) new PhoneAlreadyUsedException().getBody();
+         if (
+             ex instanceof com.pilates.booking.service.InvalidPasswordException
+         ) return (ProblemDetailWithCause) new InvalidPasswordException().getBody();
+ 
+         if (ex instanceof AuthenticationException) {
+             // Ensure no information about existing users is revealed via failed authentication attempts
+             return ProblemDetailWithCauseBuilder.instance()
+                 .withStatus(toStatus(ex).value())
+                 .withTitle("Unauthorized")
+                 .withDetail("Invalid credentials")
+                 .build();
+         }
+         if (
+             ex instanceof ErrorResponseException exp && exp.getBody() instanceof ProblemDetailWithCause problemDetailWithCause
+         ) return problemDetailWithCause;
+         return ProblemDetailWithCauseBuilder.instance().withStatus(toStatus(ex).value()).build();
+     }
+ 
+     protected ProblemDetailWithCause customizeProblem(ProblemDetailWithCause problem, Throwable err, ServerWebExchange request) {
+         if (problem.getStatus() <= 0) problem.setStatus(toStatus(err));
+ 
+         if (problem.getType() == null || problem.getType().equals(URI.create("about:blank"))) problem.setType(getMappedType(err));
+ 
+         // higher precedence to Custom/ResponseStatus types
+         String title = extractTitle(err, problem.getStatus());

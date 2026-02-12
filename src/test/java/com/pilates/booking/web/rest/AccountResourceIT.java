@@ -295,7 +295,6 @@ class AccountResourceIT {
 
     @Test
     void testRegisterDuplicateEmail() throws Exception {
-        // First user
         ManagedUserVM firstUser = new ManagedUserVM();
         firstUser.setLogin("test-register-duplicate-email");
         firstUser.setPassword("password");
@@ -306,20 +305,6 @@ class AccountResourceIT {
         firstUser.setLangKey(Constants.DEFAULT_LANGUAGE);
         firstUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
 
-        // Register first user
-        accountWebTestClient
-            .post()
-            .uri("/api/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(om.writeValueAsBytes(firstUser))
-            .exchange()
-            .expectStatus()
-            .isCreated();
-
-        Optional<User> testUser1 = userRepository.findOneByLogin("test-register-duplicate-email").blockOptional();
-        assertThat(testUser1).isPresent();
-
-        // Duplicate email, different login
         ManagedUserVM secondUser = new ManagedUserVM();
         secondUser.setLogin("test-register-duplicate-email-2");
         secondUser.setPassword(firstUser.getPassword());
@@ -330,7 +315,15 @@ class AccountResourceIT {
         secondUser.setLangKey(firstUser.getLangKey());
         secondUser.setAuthorities(new HashSet<>(firstUser.getAuthorities()));
 
-        // Register second (non activated) user
+        accountWebTestClient
+            .post()
+            .uri("/api/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(om.writeValueAsBytes(firstUser))
+            .exchange()
+            .expectStatus()
+            .isCreated();
+
         accountWebTestClient
             .post()
             .uri("/api/register")
@@ -338,44 +331,45 @@ class AccountResourceIT {
             .bodyValue(om.writeValueAsBytes(secondUser))
             .exchange()
             .expectStatus()
-            .isCreated();
+            .isEqualTo(HttpStatus.CONFLICT)
+            .expectBody()
+            .jsonPath("$.message")
+            .isEqualTo("EMAIL_ALREADY_USED");
+    }
 
-        Optional<User> testUser2 = userRepository.findOneByLogin("test-register-duplicate-email").blockOptional();
-        assertThat(testUser2).isEmpty();
+    @Test
+    void testRegisterDuplicatePhone() throws Exception {
+        ManagedUserVM firstUser = new ManagedUserVM();
+        firstUser.setLogin("test-register-duplicate-phone");
+        firstUser.setPassword("password");
+        firstUser.setFirstName("Alice");
+        firstUser.setLastName("Phone");
+        firstUser.setEmail("test-register-duplicate-phone@example.com");
+        firstUser.setPhone("+33600000001");
+        firstUser.setImageUrl("http://placehold.it/50x50");
+        firstUser.setLangKey(Constants.DEFAULT_LANGUAGE);
+        firstUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
 
-        Optional<User> testUser3 = userRepository.findOneByLogin("test-register-duplicate-email-2").blockOptional();
-        assertThat(testUser3).isPresent();
+        ManagedUserVM secondUser = new ManagedUserVM();
+        secondUser.setLogin("test-register-duplicate-phone-2");
+        secondUser.setPassword("password");
+        secondUser.setFirstName("Bob");
+        secondUser.setLastName("Phone");
+        secondUser.setEmail("test-register-duplicate-phone-2@example.com");
+        secondUser.setPhone(firstUser.getPhone());
+        secondUser.setImageUrl("http://placehold.it/50x50");
+        secondUser.setLangKey(Constants.DEFAULT_LANGUAGE);
+        secondUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
 
-        // Duplicate email - with uppercase email address
-        ManagedUserVM userWithUpperCaseEmail = new ManagedUserVM();
-        userWithUpperCaseEmail.setId(firstUser.getId());
-        userWithUpperCaseEmail.setLogin("test-register-duplicate-email-3");
-        userWithUpperCaseEmail.setPassword(firstUser.getPassword());
-        userWithUpperCaseEmail.setFirstName(firstUser.getFirstName());
-        userWithUpperCaseEmail.setLastName(firstUser.getLastName());
-        userWithUpperCaseEmail.setEmail("TEST-register-duplicate-email@example.com");
-        userWithUpperCaseEmail.setImageUrl(firstUser.getImageUrl());
-        userWithUpperCaseEmail.setLangKey(firstUser.getLangKey());
-        userWithUpperCaseEmail.setAuthorities(new HashSet<>(firstUser.getAuthorities()));
-
-        // Register third (not activated) user
         accountWebTestClient
             .post()
             .uri("/api/register")
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(om.writeValueAsBytes(userWithUpperCaseEmail))
+            .bodyValue(om.writeValueAsBytes(firstUser))
             .exchange()
             .expectStatus()
             .isCreated();
 
-        Optional<User> testUser4 = userRepository.findOneByLogin("test-register-duplicate-email-3").blockOptional();
-        assertThat(testUser4).isPresent();
-        assertThat(testUser4.orElseThrow().getEmail()).isEqualTo("test-register-duplicate-email@example.com");
-
-        testUser4.orElseThrow().setActivated(true);
-        userService.updateUser((new AdminUserDTO(testUser4.orElseThrow()))).block();
-
-        // Register 4th (already activated) user
         accountWebTestClient
             .post()
             .uri("/api/register")
@@ -383,9 +377,10 @@ class AccountResourceIT {
             .bodyValue(om.writeValueAsBytes(secondUser))
             .exchange()
             .expectStatus()
-            .is4xxClientError();
-
-        userService.deleteUser("test-register-duplicate-email-3").block();
+            .isEqualTo(HttpStatus.CONFLICT)
+            .expectBody()
+            .jsonPath("$.message")
+            .isEqualTo("PHONE_ALREADY_USED");
     }
 
     @Test

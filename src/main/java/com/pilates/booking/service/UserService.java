@@ -16,6 +16,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -102,13 +104,12 @@ public class UserService {
                 }
             })
             .then(userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()))
-            .flatMap(existingUser -> {
-                if (!existingUser.isActivated()) {
-                    return userRepository.delete(existingUser);
-                } else {
-                    return Mono.error(new EmailAlreadyUsedException());
-                }
-            })
+            .flatMap(existingUser -> Mono.error(new EmailAlreadyUsedException()))
+            .then(
+                Mono.justOrEmpty(userDTO.getPhone())
+                    .flatMap(userRepository::findOneByPhone)
+                    .flatMap(existingUser -> Mono.error(new PhoneAlreadyUsedException()))
+            )
             .publishOn(Schedulers.boundedElastic())
             .then(
                 Mono.fromCallable(() -> {
@@ -122,6 +123,7 @@ public class UserService {
                     if (userDTO.getEmail() != null) {
                         newUser.setEmail(userDTO.getEmail().toLowerCase());
                     }
+                    newUser.setPhone(userDTO.getPhone());
                     newUser.setImageUrl(userDTO.getImageUrl());
                     newUser.setLangKey(userDTO.getLangKey());
                     // new user is active by default in dev/simplified flow
@@ -140,7 +142,23 @@ public class UserService {
                     .doOnNext(user -> user.setAuthorities(authorities))
                     .flatMap(this::saveUser)
                     .doOnNext(user -> LOG.debug("Created Information for User: {}", user));
-            });
+            })
+            .onErrorMap(this::mapDuplicateUserConstraint);
+    }
+
+    private Throwable mapDuplicateUserConstraint(Throwable throwable) {
+        if (!(throwable instanceof DuplicateKeyException) && !(throwable instanceof DataIntegrityViolationException)) {
+            return throwable;
+        }
+
+        String message = throwable.getMessage();
+        if (message != null && (message.contains("ux_user_phone") || message.contains("ux_jhi_user__phone"))) {
+            return new PhoneAlreadyUsedException();
+        }
+        if (message != null && (message.contains("ux_user_email") || message.contains("ux_jhi_user__email"))) {
+            return new EmailAlreadyUsedException();
+        }
+        return throwable;
     }
 
     @Transactional
@@ -152,6 +170,7 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             user.setEmail(userDTO.getEmail().toLowerCase());
         }
+        user.setPhone(userDTO.getPhone());
         user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
@@ -192,6 +211,7 @@ public class UserService {
                 if (userDTO.getEmail() != null) {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
+                user.setPhone(userDTO.getPhone());
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());

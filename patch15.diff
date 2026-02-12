@@ -1,0 +1,188 @@
+diff --git a/src/test/java/com/pilates/booking/web/rest/AccountResourceIT.java b/src/test/java/com/pilates/booking/web/rest/AccountResourceIT.java
+index fed69f6c5caa5ce20bee38e489fcf3a4bb227aba..0a8b114ff3a5253cbb602266243d37cc723cfc03 100644
+--- a/src/test/java/com/pilates/booking/web/rest/AccountResourceIT.java
++++ b/src/test/java/com/pilates/booking/web/rest/AccountResourceIT.java
+@@ -273,141 +273,136 @@ class AccountResourceIT {
+             .bodyValue(om.writeValueAsBytes(secondUser))
+             .exchange()
+             .expectStatus()
+             .isCreated();
+ 
+         Optional<User> testUser = userRepository.findOneByEmailIgnoreCase("alice2@example.com").blockOptional();
+         assertThat(testUser).isPresent();
+         testUser.orElseThrow().setActivated(true);
+         userRepository.save(testUser.orElseThrow()).block();
+ 
+         // Second (already activated) user
+         accountWebTestClient
+             .post()
+             .uri("/api/register")
+             .contentType(MediaType.APPLICATION_JSON)
+             .bodyValue(om.writeValueAsBytes(secondUser))
+             .exchange()
+             .expectStatus()
+             .isBadRequest();
+ 
+         userService.deleteUser("alice").block();
+     }
+ 
+     @Test
+     void testRegisterDuplicateEmail() throws Exception {
+-        // First user
+         ManagedUserVM firstUser = new ManagedUserVM();
+         firstUser.setLogin("test-register-duplicate-email");
+         firstUser.setPassword("password");
+         firstUser.setFirstName("Alice");
+         firstUser.setLastName("Test");
+         firstUser.setEmail("test-register-duplicate-email@example.com");
+         firstUser.setImageUrl("http://placehold.it/50x50");
+         firstUser.setLangKey(Constants.DEFAULT_LANGUAGE);
+         firstUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+ 
+-        // Register first user
+-        accountWebTestClient
+-            .post()
+-            .uri("/api/register")
+-            .contentType(MediaType.APPLICATION_JSON)
+-            .bodyValue(om.writeValueAsBytes(firstUser))
+-            .exchange()
+-            .expectStatus()
+-            .isCreated();
+-
+-        Optional<User> testUser1 = userRepository.findOneByLogin("test-register-duplicate-email").blockOptional();
+-        assertThat(testUser1).isPresent();
+-
+-        // Duplicate email, different login
+         ManagedUserVM secondUser = new ManagedUserVM();
+         secondUser.setLogin("test-register-duplicate-email-2");
+         secondUser.setPassword(firstUser.getPassword());
+         secondUser.setFirstName(firstUser.getFirstName());
+         secondUser.setLastName(firstUser.getLastName());
+         secondUser.setEmail(firstUser.getEmail());
+         secondUser.setImageUrl(firstUser.getImageUrl());
+         secondUser.setLangKey(firstUser.getLangKey());
+         secondUser.setAuthorities(new HashSet<>(firstUser.getAuthorities()));
+ 
+-        // Register second (non activated) user
+         accountWebTestClient
+             .post()
+             .uri("/api/register")
+             .contentType(MediaType.APPLICATION_JSON)
+-            .bodyValue(om.writeValueAsBytes(secondUser))
++            .bodyValue(om.writeValueAsBytes(firstUser))
+             .exchange()
+             .expectStatus()
+             .isCreated();
+ 
+-        Optional<User> testUser2 = userRepository.findOneByLogin("test-register-duplicate-email").blockOptional();
+-        assertThat(testUser2).isEmpty();
+-
+-        Optional<User> testUser3 = userRepository.findOneByLogin("test-register-duplicate-email-2").blockOptional();
+-        assertThat(testUser3).isPresent();
+-
+-        // Duplicate email - with uppercase email address
+-        ManagedUserVM userWithUpperCaseEmail = new ManagedUserVM();
+-        userWithUpperCaseEmail.setId(firstUser.getId());
+-        userWithUpperCaseEmail.setLogin("test-register-duplicate-email-3");
+-        userWithUpperCaseEmail.setPassword(firstUser.getPassword());
+-        userWithUpperCaseEmail.setFirstName(firstUser.getFirstName());
+-        userWithUpperCaseEmail.setLastName(firstUser.getLastName());
+-        userWithUpperCaseEmail.setEmail("TEST-register-duplicate-email@example.com");
+-        userWithUpperCaseEmail.setImageUrl(firstUser.getImageUrl());
+-        userWithUpperCaseEmail.setLangKey(firstUser.getLangKey());
+-        userWithUpperCaseEmail.setAuthorities(new HashSet<>(firstUser.getAuthorities()));
+-
+-        // Register third (not activated) user
+         accountWebTestClient
+             .post()
+             .uri("/api/register")
+             .contentType(MediaType.APPLICATION_JSON)
+-            .bodyValue(om.writeValueAsBytes(userWithUpperCaseEmail))
++            .bodyValue(om.writeValueAsBytes(secondUser))
+             .exchange()
+             .expectStatus()
+-            .isCreated();
++            .isEqualTo(HttpStatus.CONFLICT)
++            .expectBody()
++            .jsonPath("$.message")
++            .isEqualTo("EMAIL_ALREADY_USED");
++    }
++
++    @Test
++    void testRegisterDuplicatePhone() throws Exception {
++        ManagedUserVM firstUser = new ManagedUserVM();
++        firstUser.setLogin("test-register-duplicate-phone");
++        firstUser.setPassword("password");
++        firstUser.setFirstName("Alice");
++        firstUser.setLastName("Phone");
++        firstUser.setEmail("test-register-duplicate-phone@example.com");
++        firstUser.setPhone("+33600000001");
++        firstUser.setImageUrl("http://placehold.it/50x50");
++        firstUser.setLangKey(Constants.DEFAULT_LANGUAGE);
++        firstUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+ 
+-        Optional<User> testUser4 = userRepository.findOneByLogin("test-register-duplicate-email-3").blockOptional();
+-        assertThat(testUser4).isPresent();
+-        assertThat(testUser4.orElseThrow().getEmail()).isEqualTo("test-register-duplicate-email@example.com");
++        ManagedUserVM secondUser = new ManagedUserVM();
++        secondUser.setLogin("test-register-duplicate-phone-2");
++        secondUser.setPassword("password");
++        secondUser.setFirstName("Bob");
++        secondUser.setLastName("Phone");
++        secondUser.setEmail("test-register-duplicate-phone-2@example.com");
++        secondUser.setPhone(firstUser.getPhone());
++        secondUser.setImageUrl("http://placehold.it/50x50");
++        secondUser.setLangKey(Constants.DEFAULT_LANGUAGE);
++        secondUser.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
+ 
+-        testUser4.orElseThrow().setActivated(true);
+-        userService.updateUser((new AdminUserDTO(testUser4.orElseThrow()))).block();
++        accountWebTestClient
++            .post()
++            .uri("/api/register")
++            .contentType(MediaType.APPLICATION_JSON)
++            .bodyValue(om.writeValueAsBytes(firstUser))
++            .exchange()
++            .expectStatus()
++            .isCreated();
+ 
+-        // Register 4th (already activated) user
+         accountWebTestClient
+             .post()
+             .uri("/api/register")
+             .contentType(MediaType.APPLICATION_JSON)
+             .bodyValue(om.writeValueAsBytes(secondUser))
+             .exchange()
+             .expectStatus()
+-            .is4xxClientError();
+-
+-        userService.deleteUser("test-register-duplicate-email-3").block();
++            .isEqualTo(HttpStatus.CONFLICT)
++            .expectBody()
++            .jsonPath("$.message")
++            .isEqualTo("PHONE_ALREADY_USED");
+     }
+ 
+     @Test
+     void testRegisterAdminIsIgnored() throws Exception {
+         ManagedUserVM validUser = new ManagedUserVM();
+         validUser.setLogin("badguy");
+         validUser.setPassword("password");
+         validUser.setFirstName("Bad");
+         validUser.setLastName("Guy");
+         validUser.setEmail("badguy@example.com");
+         validUser.setActivated(true);
+         validUser.setImageUrl("http://placehold.it/50x50");
+         validUser.setLangKey(Constants.DEFAULT_LANGUAGE);
+         validUser.setAuthorities(Collections.singleton(AuthoritiesConstants.ADMIN));
+ 
+         accountWebTestClient
+             .post()
+             .uri("/api/register")
+             .contentType(MediaType.APPLICATION_JSON)
+             .bodyValue(om.writeValueAsBytes(validUser))
+             .exchange()
+             .expectStatus()
+             .isCreated();
+ 
+         Optional<User> userDup = userRepository.findOneWithAuthoritiesByLogin("badguy").blockOptional();

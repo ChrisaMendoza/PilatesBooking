@@ -1,0 +1,25 @@
+diff --git a/src/main/resources/config/liquibase/changelog/20260212101500_add_user_phone_uniqueness.xml b/src/main/resources/config/liquibase/changelog/20260212101500_add_user_phone_uniqueness.xml
+new file mode 100644
+index 0000000000000000000000000000000000000000..c0ef554ca828177856c0083d5dd6a75aab83dd2e
+--- /dev/null
++++ b/src/main/resources/config/liquibase/changelog/20260212101500_add_user_phone_uniqueness.xml
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="utf-8"?>
++<databaseChangeLog
++    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
++
++    <changeSet id="20260212101500-1" author="codex">
++        <addColumn tableName="jhi_user">
++            <column name="phone" type="varchar(50)"/>
++        </addColumn>
++    </changeSet>
++
++    <changeSet id="20260212101500-2" author="codex">
++        <addUniqueConstraint
++            tableName="jhi_user"
++            columnNames="phone"
++            constraintName="ux_user_phone"/>
++    </changeSet>
++</databaseChangeLog>

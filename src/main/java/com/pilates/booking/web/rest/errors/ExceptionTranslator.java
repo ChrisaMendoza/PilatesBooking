@@ -105,6 +105,9 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
             ex instanceof com.pilates.booking.service.EmailAlreadyUsedException
         ) return (ProblemDetailWithCause) new EmailAlreadyUsedException().getBody();
         if (
+            ex instanceof com.pilates.booking.service.PhoneAlreadyUsedException
+        ) return (ProblemDetailWithCause) new PhoneAlreadyUsedException().getBody();
+        if (
             ex instanceof com.pilates.booking.service.InvalidPasswordException
         ) return (ProblemDetailWithCause) new InvalidPasswordException().getBody();
 

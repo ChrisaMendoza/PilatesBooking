@@ -1,0 +1,23 @@
+diff --git a/src/main/java/com/pilates/booking/web/rest/errors/ErrorConstants.java b/src/main/java/com/pilates/booking/web/rest/errors/ErrorConstants.java
+index 1e5a45ec6914fd325a19eb65b403206b95bafdc2..6eaf23eed29d6bc5baa116831c2709590a399a78 100644
+--- a/src/main/java/com/pilates/booking/web/rest/errors/ErrorConstants.java
++++ b/src/main/java/com/pilates/booking/web/rest/errors/ErrorConstants.java
+@@ -1,17 +1,18 @@
+ package com.pilates.booking.web.rest.errors;
+ 
+ import java.net.URI;
+ 
+ public final class ErrorConstants {
+ 
+     public static final String ERR_CONCURRENCY_FAILURE = "error.concurrencyFailure";
+     public static final String ERR_VALIDATION = "error.validation";
+     public static final String PROBLEM_BASE_URL = "https://www.jhipster.tech/problem";
+     public static final URI DEFAULT_TYPE = URI.create(PROBLEM_BASE_URL + "/problem-with-message");
+     public static final URI CONSTRAINT_VIOLATION_TYPE = URI.create(PROBLEM_BASE_URL + "/constraint-violation");
+     public static final URI INVALID_PASSWORD_TYPE = URI.create(PROBLEM_BASE_URL + "/invalid-password");
+     public static final URI EMAIL_ALREADY_USED_TYPE = URI.create(PROBLEM_BASE_URL + "/email-already-used");
+     public static final URI LOGIN_ALREADY_USED_TYPE = URI.create(PROBLEM_BASE_URL + "/login-already-used");
++    public static final URI PHONE_ALREADY_USED_TYPE = URI.create(PROBLEM_BASE_URL + "/phone-already-used");
+ 
+     private ErrorConstants() {}
+ }

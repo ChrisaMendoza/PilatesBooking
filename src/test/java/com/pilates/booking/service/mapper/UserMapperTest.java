@@ -36,6 +36,7 @@ class UserMapperTest {
         user.setPassword(RandomStringUtils.insecure().nextAlphanumeric(60));
         user.setActivated(true);
         user.setEmail("johndoe@localhost");
+        user.setPhone("+33601020304");
         user.setFirstName("john");
         user.setLastName("doe");
         user.setImageUrl("image_url");
@@ -63,6 +64,7 @@ class UserMapperTest {
         assertThat(convertedUserDto.getFirstName()).isEqualTo(user.getFirstName());
         assertThat(convertedUserDto.getLastName()).isEqualTo(user.getLastName());
         assertThat(convertedUserDto.getEmail()).isEqualTo(user.getEmail());
+        assertThat(convertedUserDto.getPhone()).isEqualTo(user.getPhone());
         assertThat(convertedUserDto.isActivated()).isEqualTo(user.isActivated());
         assertThat(convertedUserDto.getImageUrl()).isEqualTo(user.getImageUrl());
         assertThat(convertedUserDto.getCreatedBy()).isEqualTo(user.getCreatedBy());
@@ -82,6 +84,7 @@ class UserMapperTest {
         assertThat(convertedUser.getFirstName()).isEqualTo(userDto.getFirstName());
         assertThat(convertedUser.getLastName()).isEqualTo(userDto.getLastName());
         assertThat(convertedUser.getEmail()).isEqualTo(userDto.getEmail());
+        assertThat(convertedUser.getPhone()).isEqualTo(userDto.getPhone());
         assertThat(convertedUser.isActivated()).isEqualTo(userDto.isActivated());
         assertThat(convertedUser.getImageUrl()).isEqualTo(userDto.getImageUrl());
         assertThat(convertedUser.getLangKey()).isEqualTo(userDto.getLangKey());
